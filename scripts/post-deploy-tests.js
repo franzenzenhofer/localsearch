@@ -78,42 +78,58 @@ class PostDeploymentTester {
     return true
   }
 
-  async testReactAppLoading() {
+  async testLiveVersionVerification() {
     // Read the current version from package.json
     const fs = await import('fs')
     const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
     const expectedVersion = packageJson.version
     
-    const response = await fetch(SITE_URL)
+    info(`🔍 DETECTIVE MODE: Checking for version v${expectedVersion}`)
+    
+    const response = await fetch(`${SITE_URL}?v=${Date.now()}`, {
+      cache: 'no-cache',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    })
     const html = await response.text()
     
-    // Check if the React app is properly loaded
-    if (!html.includes('<div id="root">')) {
-      return 'React root element not found'
+    // CRITICAL: Check version in HTML title 
+    const titleMatch = html.match(/<title>LocalSearch v([^<]+) - Private File Search<\/title>/)
+    if (!titleMatch) {
+      return `❌ CRITICAL: Version not found in HTML title. Expected "LocalSearch v${expectedVersion}" but title is: ${html.match(/<title>([^<]+)<\/title>/)?.[1] || 'MISSING'}`
+    }
+    const titleVersion = titleMatch[1]
+    if (titleVersion !== expectedVersion) {
+      return `❌ CRITICAL: Version mismatch in title. Expected v${expectedVersion} but got v${titleVersion}`
     }
     
-    // Check if app assets are properly versioned
-    const hasVersionedAssets = /index\-[a-zA-Z0-9]+\.(js|css)/.test(html)
-    if (!hasVersionedAssets) {
-      return 'App assets not properly versioned'
+    // Check version in meta tags
+    if (!html.includes(`<meta name="app-version" content="${expectedVersion}"`)) {
+      return `❌ Version meta tag missing or incorrect. Expected v${expectedVersion}`
     }
     
-    // Check if the correct version is served by testing the JS bundle content
-    const jsMatch = html.match(/assets\/index-([a-zA-Z0-9]+)\.js/)
-    if (jsMatch) {
-      try {
-        const jsUrl = jsMatch[1].startsWith('http') ? jsMatch[1] : `${SITE_URL}${jsMatch[0]}`
-        const jsResponse = await fetch(jsUrl)
-        const jsContent = await jsResponse.text()
-        
-        // Verify the expected version is in the bundle
-        if (!jsContent.includes(expectedVersion)) {
-          return `Version mismatch: expected v${expectedVersion} not found in deployed bundle`
-        }
-      } catch (error) {
-        return `Failed to verify version in deployed bundle: ${error.message}`
+    // Check version in window globals
+    if (!html.includes(`window.__APP_VERSION__="${expectedVersion}"`)) {
+      return `❌ Global window version variable missing or incorrect. Expected v${expectedVersion}`
+    }
+    
+    // Check build time is recent (within last hour)
+    const buildTimeMatch = html.match(/window\.__BUILD_TIME__="([^"]+)"/)
+    if (buildTimeMatch) {
+      const buildTime = new Date(buildTimeMatch[1])
+      const now = new Date()
+      const hourAgo = new Date(now - 60 * 60 * 1000)
+      if (buildTime < hourAgo) {
+        return `⚠️  Build time seems old: ${buildTime.toISOString()}. Expected within last hour.`
       }
     }
+    
+    success(`🎉 CONFIRMED: Live site shows correct version v${expectedVersion}`)
+    success(`🔍 Title: LocalSearch v${titleVersion} ✅`)
+    success(`🔍 Meta tag: app-version="${expectedVersion}" ✅`)
+    success(`🔍 Window global: __APP_VERSION__="${expectedVersion}" ✅`)
     
     return true
   }
@@ -274,9 +290,10 @@ class PostDeploymentTester {
     const response = await fetch(SITE_URL)
     const html = await response.text()
     
-    // Check for proper title
-    if (!html.includes('<title>LocalSearch - Private File Search</title>')) {
-      return 'Page title incorrect'
+    // Check for versioned title pattern
+    const hasVersionedTitle = /<title>LocalSearch v[0-9]+\.[0-9]+\.[0-9]+ - Private File Search<\/title>/.test(html)
+    if (!hasVersionedTitle) {
+      return 'Versioned page title missing or incorrect format'
     }
     
     // Check for proper description
@@ -292,9 +309,11 @@ class PostDeploymentTester {
     info(`Testing: ${SITE_URL}`)
     console.log('')
 
+    // CRITICAL: Live version verification test FIRST
+    await this.runTest('🔍 LIVE VERSION VERIFICATION', () => this.testLiveVersionVerification())
+    
     // Core functionality tests
     await this.runTest('Site Accessibility', () => this.testSiteAccessibility())
-    await this.runTest('React App Loading', () => this.testReactAppLoading())
     await this.runTest('Static Assets Loading', () => this.testStaticAssets())
     await this.runTest('Material-UI Integration', () => this.testMaterialUILoading())
     

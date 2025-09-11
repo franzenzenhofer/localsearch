@@ -1,41 +1,97 @@
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import react from '@vitejs/plugin-react'
+import fs from 'fs'
+
+// Read package.json to get version
+const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
+const version = packageJson.version
+const buildTime = new Date().toISOString()
 
 export default defineConfig({
+  define: {
+    __APP_VERSION__: JSON.stringify(version),
+    __BUILD_TIME__: JSON.stringify(buildTime),
+  },
   plugins: [
     react(),
+    // Custom plugin to inject version into HTML
+    {
+      name: 'inject-version',
+      transformIndexHtml(html) {
+        return html.replace(
+          '<title>LocalSearch - Private File Search</title>',
+          `<title>LocalSearch v${version} - Private File Search</title>
+    <!-- LocalSearch Version: ${version} -->
+    <!-- Build Time: ${buildTime} -->
+    <meta name="app-version" content="${version}" />
+    <meta name="build-time" content="${buildTime}" />
+    <script>window.__APP_VERSION__="${version}";window.__BUILD_TIME__="${buildTime}";</script>`
+        )
+      }
+    },
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       workbox: {
-        // CRITICAL: Exclude ALL HTML files from precaching to force network-first
+        // NEVER precache HTML - forces network-first always
         globPatterns: ['**/*.{js,css,woff2,ttf,ico,png,jpg,jpeg,svg,webp}'],
-        globIgnores: ['**/index.html', '**/*.html'],
+        globIgnores: ['**/index.html', '**/*.html', '**/sw.js', '**/workbox-*.js'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
-        skipWaiting: true,
-        clientsClaim: true,
+        skipWaiting: false, // Let user control updates
+        clientsClaim: false, // Let user control updates  
         cleanupOutdatedCaches: true,
-        // Force cache name change to break existing caches
-        cacheId: 'localsearch-v2',
+        // Change cache ID to force cache invalidation
+        cacheId: `localsearch-${Date.now()}`,
+        mode: 'generateSW',
         runtimeCaching: [
-          // NetworkFirst for ALL navigation/HTML requests (app shell)
+          // Network-First for HTML with aggressive cache bypass
           {
-            urlPattern: ({ request }) => request.mode === 'navigate',
+            urlPattern: ({ request }) => 
+              request.mode === 'navigate' || 
+              request.destination === 'document' ||
+              /\.html$/.test(request.url),
             handler: 'NetworkFirst',
             options: {
-              cacheName: 'html-cache-v2',
-              networkTimeoutSeconds: 3,
+              cacheName: `html-cache-${Date.now()}`,
+              networkTimeoutSeconds: 2,
+              cacheableResponse: {
+                statuses: [0, 200]
+              },
+              plugins: [{
+                requestWillFetch: async ({ request }) => {
+                  // Force bypass cache with reload mode
+                  return new Request(request, { 
+                    cache: 'reload',
+                    headers: {
+                      ...request.headers,
+                      'Cache-Control': 'no-cache'
+                    }
+                  });
+                }
+              }]
+            }
+          },
+          // StaleWhileRevalidate for JS/CSS with version checking
+          {
+            urlPattern: /\.(?:js|css)$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: `assets-cache-${Date.now()}`,
               cacheableResponse: {
                 statuses: [0, 200]
               }
             }
           },
-          // StaleWhileRevalidate for static assets 
+          // CacheFirst for images and fonts (rarely change)
           {
-            urlPattern: /\.(?:js|css|woff2?|ttf|png|jpg|jpeg|svg|webp|ico)$/,
-            handler: 'StaleWhileRevalidate',
+            urlPattern: /\.(?:woff2?|ttf|png|jpg|jpeg|svg|webp|ico)$/,
+            handler: 'CacheFirst',
             options: {
-              cacheName: 'static-assets-v2'
+              cacheName: `media-cache-${Date.now()}`,
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+              }
             }
           }
         ]

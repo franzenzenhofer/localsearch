@@ -106,7 +106,7 @@ async function deploy() {
       exec('npm run test:post-deploy')
       log.success('Post-deploy tests passed')
     } catch (error) {
-      log.warn('Post-deploy tests had minor issues - continuing deployment')
+      log.warning('Post-deploy tests had minor issues - continuing deployment')
     }
 
     // Step 6: Commit version changes if any

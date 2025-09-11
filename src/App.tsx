@@ -1,11 +1,25 @@
-import { MagnifyingGlassIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import { useDarkMode } from './hooks/useDarkMode'
+import { Container, TextField, Button, Typography, Box, InputAdornment, Paper, AppBar, Toolbar, CssBaseline, ThemeProvider, createTheme } from '@mui/material'
+import { Search as SearchIcon } from '@mui/icons-material'
 import { useSearch } from './hooks/useSearch'
 import { SearchResults } from './components/SearchResults'
 import { FileUpload } from './components/FileUpload'
 
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#1976d2',
+    },
+    background: {
+      default: '#f5f5f5',
+    },
+  },
+  typography: {
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  },
+})
+
 function App() {
-  const [darkMode, toggleDarkMode] = useDarkMode()
   const { 
     query, 
     setQuery, 
@@ -17,62 +31,59 @@ function App() {
   } = useSearch()
 
   return (
-    <div className={darkMode ? 'dark' : ''}>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-indigo-900">
-        <div className="container">
-          <header className="header">
-            <h1>LocalSearch</h1>
-            <p>Private, offline folder search</p>
-            <button 
-              onClick={toggleDarkMode}
-              className="theme-toggle"
-              aria-label="Toggle dark mode"
-            >
-              {darkMode ? (
-                <SunIcon className="theme-icon" />
-              ) : (
-                <MoonIcon className="theme-icon" />
-              )}
-            </button>
-          </header>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ flexGrow: 1, minHeight: '100vh', backgroundColor: 'background.default' }}>
+        <AppBar position="static" elevation={0}>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              LocalSearch
+            </Typography>
+            <Typography variant="body2" color="inherit">
+              Private, offline folder search
+            </Typography>
+          </Toolbar>
+        </AppBar>
 
-          <main className="space-y-8">
-            <div className="search-section">
-              <div className="search-bar">
-                <div className="relative flex-1">
-                  <MagnifyingGlassIcon className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
-                  <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && performSearch()}
-                    placeholder="Search your files..."
-                    className="w-full pl-10 pr-4 py-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm
-                             border border-slate-200/50 dark:border-slate-700/50 rounded-xl
-                             focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50
-                             placeholder:text-slate-400 dark:placeholder:text-slate-500
-                             text-slate-900 dark:text-slate-100 transition-all"
-                  />
-                </div>
-                <button
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Paper elevation={1} sx={{ p: 3 }}>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <TextField
+                  fullWidth
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && performSearch()}
+                  placeholder="Search your files..."
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ flexGrow: 1, minWidth: 300 }}
+                />
+                <Button
                   onClick={performSearch}
                   disabled={!query.trim() || fileCount === 0}
-                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300
-                           dark:disabled:bg-slate-700 text-white rounded-xl font-medium
-                           transition-colors disabled:cursor-not-allowed"
+                  variant="contained"
+                  size="large"
+                  sx={{ px: 4, minWidth: 120 }}
                 >
                   {isSearching ? 'Searching...' : 'Search'}
-                </button>
-              </div>
-            </div>
+                </Button>
+              </Box>
+            </Paper>
 
             <FileUpload onUpload={handleFileUpload} fileCount={fileCount} />
             
             <SearchResults results={results} isLoading={isSearching} />
-          </main>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Container>
+      </Box>
+    </ThemeProvider>
   )
 }
 

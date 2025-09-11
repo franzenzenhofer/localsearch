@@ -1,65 +1,72 @@
-import type { SearchResult, SearchQuery, DocumentContent, FileMetadata } from './types.js';
-import { MiniSearchEngine } from '../search/mini-search-engine.js';
-import { createExtractors } from '../app/extractor-factory.js';
+import type { SearchResult, SearchQuery, DocumentContent, FileMetadata } from './types.js'
+import { MiniSearchEngine } from '../search/mini-search-engine.js'
+import { createExtractors } from '../app/extractor-factory.js'
 
 export interface SearchFacadeConfig {
-  onProgress?: (current: number, total: number) => void;
-  onError?: (error: string) => void;
+  onProgress?: (current: number, total: number) => void
+  onError?: (error: string) => void
 }
 
 export class SearchFacade {
-  private searchEngine = new MiniSearchEngine();
-  private extractors = createExtractors();
-  private fileCount = 0;
-  private config: SearchFacadeConfig;
+  private searchEngine = new MiniSearchEngine()
+  private extractors = createExtractors()
+  private fileCount = 0
+  private config: SearchFacadeConfig
 
   constructor(config: SearchFacadeConfig = {}) {
-    this.config = config;
+    this.config = config
   }
 
   async indexFiles(files: File[]): Promise<void> {
-    const total = files.length;
+    const total = files.length
     
     for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      this.config.onProgress?.(i + 1, total);
+      const file = files[i]
+      this.config.onProgress?.(i + 1, total)
       
       try {
-        await this.processAndIndexFile(file);
-        this.fileCount++;
+        await this.processAndIndexFile(file)
+        this.fileCount++
       } catch (error) {
-        this.config.onError?.(`Failed to process ${file.name}: ${(error as Error).message}`);
+        this.config.onError?.(`Failed to process ${file.name}: ${(error as Error).message}`)
       }
     }
     
-    this.config.onProgress?.(0, 0); // Reset progress
+    this.config.onProgress?.(0, 0)
   }
 
   async search(queryText: string, limit = 20): Promise<SearchResult[]> {
-    if (!queryText.trim()) return [];
+    if (!queryText.trim()) return []
     
-    const query: SearchQuery = { text: queryText, limit };
-    return await this.searchEngine.search(query);
+    const query: SearchQuery = { text: queryText, limit }
+    return await this.searchEngine.search(query)
   }
 
   getFileCount(): number {
-    return this.fileCount;
+    return this.fileCount
   }
 
   async clear(): Promise<void> {
-    await this.searchEngine.clear();
-    this.fileCount = 0;
+    await this.searchEngine.clear()
+    this.fileCount = 0
   }
 
   private async processAndIndexFile(file: File): Promise<void> {
-    const extension = file.name.split('.').pop()?.toLowerCase() || '';
-    const extractor = this.extractors.get(extension);
-    
-    if (!extractor) {
-      throw new Error(`Unsupported file type: ${extension}`);
-    }
+    await this.extractAndIndex(file)
+  }
 
-    const metadata: FileMetadata = {
+  private async extractAndIndex(file: File): Promise<void> {
+    const metadata = this.createMetadata(file)
+    const extractor = this.getExtractor(metadata.extension)
+    const extractedText = await this.extractText(file, metadata, extractor)
+    
+    const document = this.createDocument(metadata, extractedText)
+    await this.indexDocument(document, metadata)
+  }
+
+  private createMetadata(file: File): FileMetadata {
+    const extension = file.name.split('.').pop()?.toLowerCase() || ''
+    return {
       id: crypto.randomUUID(),
       path: file.webkitRelativePath || file.name,
       name: file.name,
@@ -67,27 +74,34 @@ export class SearchFacade {
       size: file.size,
       lastModified: file.lastModified,
       type: extension as any,
-      hash: await this.generateHash(file)
-    };
-
-    const result = await extractor.extract(file, metadata);
-    const extractedText = typeof result === 'string' ? result : result.text;
-    
-    const document: DocumentContent = {
-      id: metadata.id,
-      fileId: metadata.id,
-      text: extractedText,
-      metadata: {}
-    };
-
-    this.searchEngine.setMetadata(metadata.id, metadata);
-    await this.searchEngine.addDocuments([document]);
+      hash: ''
+    }
   }
 
-  private async generateHash(file: File): Promise<string> {
-    const buffer = await file.arrayBuffer();
-    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  private getExtractor(extension: string) {
+    const extractor = this.extractors.get(extension)
+    if (!extractor) {
+      throw new Error(`Unsupported file type: ${extension}`)
+    }
+    return extractor
+  }
+
+  private async extractText(file: File, metadata: FileMetadata, extractor: any): Promise<string> {
+    const result = await extractor.extract(file, metadata)
+    return typeof result === 'string' ? result : result.text
+  }
+
+  private createDocument(metadata: FileMetadata, text: string): DocumentContent {
+    return {
+      id: metadata.id,
+      fileId: metadata.id,
+      text,
+      metadata: {}
+    }
+  }
+
+  private async indexDocument(document: DocumentContent, metadata: FileMetadata): Promise<void> {
+    this.searchEngine.setMetadata(metadata.id, metadata)
+    await this.searchEngine.addDocuments([document])
   }
 }

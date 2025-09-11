@@ -8,39 +8,34 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        globPatterns: ['**/*.{js,css,ico,png,svg}'], // Exclude HTML from precaching
-        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4MB for PDF.js
+        // CRITICAL: Exclude ALL HTML files from precaching to force network-first
+        globPatterns: ['**/*.{js,css,woff2,ttf,ico,png,jpg,jpeg,svg,webp}'],
+        globIgnores: ['**/index.html', '**/*.html'],
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
+        // Force cache name change to break existing caches
+        cacheId: 'localsearch-v2',
         runtimeCaching: [
-          // NetworkFirst for HTML/navigation requests (app shell)
+          // NetworkFirst for ALL navigation/HTML requests (app shell)
           {
-            urlPattern: /^https:\/\/localsearch\.franzai\.com\/.*$/,
+            urlPattern: ({ request }) => request.mode === 'navigate',
             handler: 'NetworkFirst',
             options: {
-              cacheName: 'app-shell-v1',
-              networkTimeoutSeconds: 5
+              cacheName: 'html-cache-v2',
+              networkTimeoutSeconds: 3,
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
             }
           },
           // StaleWhileRevalidate for static assets 
           {
-            urlPattern: /\.(?:js|css|woff2?|png|jpg|jpeg|svg|ico)$/,
+            urlPattern: /\.(?:js|css|woff2?|ttf|png|jpg|jpeg|svg|webp|ico)$/,
             handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'assets-v1'
-            }
-          },
-          // CacheFirst for external CDN resources
-          {
-            urlPattern: /^https:\/\/cdnjs\.cloudflare\.com/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'cdn-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-              }
+              cacheName: 'static-assets-v2'
             }
           }
         ]

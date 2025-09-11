@@ -22,11 +22,13 @@ export default defineConfig({
         return html.replace(
           '<title>LocalSearch - Private File Search</title>',
           `<title>LocalSearch v${version} - Private File Search</title>
+    <!-- 🚨 CACHE BREAKER: ${Date.now()} -->
     <!-- LocalSearch Version: ${version} -->
     <!-- Build Time: ${buildTime} -->
     <meta name="app-version" content="${version}" />
     <meta name="build-time" content="${buildTime}" />
-    <script>window.__APP_VERSION__="${version}";window.__BUILD_TIME__="${buildTime}";</script>`
+    <meta name="cache-breaker" content="${Date.now()}" />
+    <script>window.__APP_VERSION__="${version}";window.__BUILD_TIME__="${buildTime}";window.__CACHE_BREAKER__="${Date.now()}";</script>`
         )
       }
     },

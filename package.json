@@ -17,7 +17,10 @@
     "type-check": "tsc --noEmit",
     "deploy": "npm run test:run && npm run lint && npm run type-check && npm run build && npm run test:e2e",
     "deploy:cf": "npm run deploy && wrangler pages deploy dist --project-name=localsearch",
-    "deploy:gh": "npm run deploy && gh-pages -d dist"
+    "deploy:gh": "npm run deploy && gh-pages -d dist",
+    "build:extensions": "node build-extensions.js",
+    "quality:check": "npm run test:run && npm run type-check && npm run lint",
+    "cli": "tsx cli.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.0",
@@ -47,6 +50,7 @@
     "minisearch": "^6.3.0",
     "papaparse": "^5.4.1",
     "pdfjs-dist": "^4.0.269",
-    "stopword": "^2.0.8"
+    "stopword": "^2.0.8",
+    "tsx": "^4.20.5"
   }
 }

@@ -1,0 +1,5 @@
+name,technology,description
+LocalSearch,TypeScript,Private offline search application
+PDF.js,JavaScript,Mozilla PDF processing library
+MiniSearch,JavaScript,Lightweight full-text search engine
+Vite,JavaScript,Modern frontend build tool

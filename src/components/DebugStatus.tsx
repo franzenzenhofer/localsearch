@@ -1,3 +1,4 @@
+import React from 'react'
 import { Typography, Box, Chip } from '@mui/material'
 import { useSearch } from '../hooks/useSearch'
 import packageJson from '../../package.json'
@@ -5,6 +6,14 @@ import packageJson from '../../package.json'
 export function DebugStatus() {
   const { fileCount } = useSearch()
   const buildDate = new Date().toLocaleDateString()
+  const buildTime = new Date().toLocaleTimeString()
+  
+  // Make version globally accessible for post-deploy tests
+  React.useEffect(() => {
+    (window as any).__APP_VERSION__ = packageJson.version;
+    (window as any).__BUILD_DATE__ = buildDate;
+    console.log('🦸 LocalSearch v' + packageJson.version + ' - Build: ' + buildDate);
+  }, [buildDate]);
   
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>

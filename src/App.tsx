@@ -6,6 +6,7 @@ import { AppHeader } from './components/AppHeader'
 import { SearchBar } from './components/SearchBar'
 import { DebugView } from './components/DebugView'
 import { IndexManager } from './components/IndexManager'
+import { ConnectivityStatus } from './components/ConnectivityStatus'
 import { superheroTheme } from './theme/superhero'
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
             )}
           </Box>
         </Container>
+        <ConnectivityStatus />
         <DebugView />
       </Box>
     </ThemeProvider>

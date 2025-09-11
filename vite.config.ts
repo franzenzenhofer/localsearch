@@ -8,9 +8,30 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        globPatterns: ['**/*.{js,css,ico,png,svg}'], // Exclude HTML from precaching
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4MB for PDF.js
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
+          // NetworkFirst for HTML/navigation requests (app shell)
+          {
+            urlPattern: /^https:\/\/localsearch\.franzai\.com\/.*$/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'app-shell-v1',
+              networkTimeoutSeconds: 5
+            }
+          },
+          // StaleWhileRevalidate for static assets 
+          {
+            urlPattern: /\.(?:js|css|woff2?|png|jpg|jpeg|svg|ico)$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'assets-v1'
+            }
+          },
+          // CacheFirst for external CDN resources
           {
             urlPattern: /^https:\/\/cdnjs\.cloudflare\.com/,
             handler: 'CacheFirst',

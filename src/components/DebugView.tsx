@@ -3,6 +3,7 @@ import { Paper, Typography, Accordion, AccordionSummary, AccordionDetails, Butto
 import { ExpandMore as ExpandMoreIcon, BugReport as BugIcon } from '@mui/icons-material'
 import { DebugStatus } from './DebugStatus'
 import { DebugPerformance } from './DebugPerformance'
+import { ForceUpdate } from './ForceUpdate'
 
 function DebugButton({ onClick }: { onClick: () => void }) {
   return (
@@ -38,6 +39,15 @@ function DebugPanel({ onClose }: { onClose: () => void }) {
           </AccordionSummary>
           <AccordionDetails>
             <DebugPerformance />
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Force Update</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <ForceUpdate />
           </AccordionDetails>
         </Accordion>
       </Box>

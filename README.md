@@ -126,6 +126,16 @@ Enable debug mode to see:
 - Search engine internals  
 - File processing pipeline
 - Performance metrics
+- **Force Update** - Clear all caches and force reload latest version
+
+#### Force Update Feature
+If you're stuck on an old cached version of the app:
+1. Open the **Debug Interface** (bottom-right Debug button)
+2. Expand **"Force Update"** section
+3. Click **"Force Update & Reload"** button
+4. The app will clear all caches and reload with the latest version
+
+This is especially useful when the service worker is serving stale content.
 
 ## 📋 Scripts
 

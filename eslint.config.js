@@ -17,6 +17,8 @@ export default [
         console: 'readonly',
         document: 'readonly',
         window: 'readonly',
+        navigator: 'readonly',
+        caches: 'readonly',
         localStorage: 'readonly',
         alert: 'readonly',
         crypto: 'readonly',

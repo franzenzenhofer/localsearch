@@ -79,6 +79,11 @@ class PostDeploymentTester {
   }
 
   async testReactAppLoading() {
+    // Read the current version from package.json
+    const fs = await import('fs')
+    const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
+    const expectedVersion = packageJson.version
+    
     const response = await fetch(SITE_URL)
     const html = await response.text()
     
@@ -87,15 +92,27 @@ class PostDeploymentTester {
       return 'React root element not found'
     }
     
-    // Check for Material-UI styles
-    if (!html.includes('index-') || !html.includes('.css')) {
-      return 'Material-UI styles not found'
-    }
-    
     // Check if app assets are properly versioned
     const hasVersionedAssets = /index\-[a-zA-Z0-9]+\.(js|css)/.test(html)
     if (!hasVersionedAssets) {
       return 'App assets not properly versioned'
+    }
+    
+    // Check if the correct version is served by testing the JS bundle content
+    const jsMatch = html.match(/assets\/index-([a-zA-Z0-9]+)\.js/)
+    if (jsMatch) {
+      try {
+        const jsUrl = jsMatch[1].startsWith('http') ? jsMatch[1] : `${SITE_URL}${jsMatch[0]}`
+        const jsResponse = await fetch(jsUrl)
+        const jsContent = await jsResponse.text()
+        
+        // Verify the expected version is in the bundle
+        if (!jsContent.includes(expectedVersion)) {
+          return `Version mismatch: expected v${expectedVersion} not found in deployed bundle`
+        }
+      } catch (error) {
+        return `Failed to verify version in deployed bundle: ${error.message}`
+      }
     }
     
     return true

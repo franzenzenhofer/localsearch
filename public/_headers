@@ -1,28 +1,31 @@
 # Cloudflare Pages headers configuration
-# CRITICAL: Prevent HTML caching to ensure users always get latest version
+# 🚨 HARDCORE: NUCLEAR CACHE BUSTING FOR HTML FILES
 
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 
-# NEVER cache HTML files - always serve fresh
+# 🔥 NUCLEAR: Never cache HTML - EVER
 /
-  Cache-Control: no-cache, no-store, must-revalidate
+  Cache-Control: no-cache, no-store, must-revalidate, max-age=0
   Pragma: no-cache
-  Expires: 0
-  ETag: "v1.42.0"
+  Expires: Thu, 01 Jan 1970 00:00:00 GMT
+  ETag: "v1.47.0-force-reload"
+  Vary: *
   
 /index.html
-  Cache-Control: no-cache, no-store, must-revalidate
+  Cache-Control: no-cache, no-store, must-revalidate, max-age=0
   Pragma: no-cache
-  Expires: 0
-  ETag: "v1.42.0"
+  Expires: Thu, 01 Jan 1970 00:00:00 GMT
+  ETag: "v1.47.0-force-reload"
+  Vary: *
 
 /*.html
-  Cache-Control: no-cache, no-store, must-revalidate
+  Cache-Control: no-cache, no-store, must-revalidate, max-age=0
   Pragma: no-cache
-  Expires: 0
+  Expires: Thu, 01 Jan 1970 00:00:00 GMT
+  Vary: *
 
 # Cache static assets for 1 year
 /*.js

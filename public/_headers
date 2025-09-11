@@ -6,19 +6,21 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 
-# 🔥 NUCLEAR: Never cache HTML - EVER
+# 🔥 NUCLEAR: Never cache HTML - EVER  
 /
-  Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+  Cache-Control: no-cache, no-store, must-revalidate, max-age=0, s-maxage=0
   Pragma: no-cache
   Expires: Thu, 01 Jan 1970 00:00:00 GMT
-  ETag: "v1.47.0-force-reload"
+  ETag: "v1.51.0-force-reload-NOW"
   Vary: *
+  X-Accel-Expires: 0
+  Surrogate-Control: no-store
   
 /index.html
   Cache-Control: no-cache, no-store, must-revalidate, max-age=0
   Pragma: no-cache
   Expires: Thu, 01 Jan 1970 00:00:00 GMT
-  ETag: "v1.47.0-force-reload"
+  ETag: "v1.51.0-force-reload-NOW"
   Vary: *
 
 /*.html

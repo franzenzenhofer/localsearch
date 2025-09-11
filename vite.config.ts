@@ -35,16 +35,19 @@ export default defineConfig({
     VitePWA({
       registerType: 'prompt',
       workbox: {
-        // NEVER precache HTML - forces network-first always
-        globPatterns: ['**/*.{js,css,woff2,ttf,ico,png,jpg,jpeg,svg,webp}'],
-        globIgnores: ['**/index.html', '**/*.html', '**/sw.js', '**/workbox-*.js'],
+        // Include index.html but use network-first strategy
+        globPatterns: ['**/*.{js,css,woff2,ttf,ico,png,jpg,jpeg,svg,webp,html}'],
+        globIgnores: ['**/sw.js', '**/workbox-*.js'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         skipWaiting: false, // Let user control updates
         clientsClaim: false, // Let user control updates  
         cleanupOutdatedCaches: true,
         // Change cache ID to force cache invalidation
-        cacheId: `localsearch-${Date.now()}`,
+        cacheId: `filesearch-${Date.now()}`,
         mode: 'generateSW',
+        // Disable navigation fallback since we handle it with runtime caching
+        navigateFallback: null,
+        navigateFallbackDenylist: [/^\/_/, /\/[^/?]+\.[^/]+$/],
         runtimeCaching: [
           // Network-First for HTML with aggressive cache bypass
           {

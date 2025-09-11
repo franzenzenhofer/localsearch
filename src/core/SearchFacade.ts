@@ -7,13 +7,19 @@ export interface SearchFacadeConfig {
 
 export class SearchFacade {
   private documents: any[] = []
+  private config: SearchFacadeConfig
+
+  constructor(config: SearchFacadeConfig = {}) {
+    this.config = config
+  }
 
   async processFiles(files: File[], config: SearchFacadeConfig = {}): Promise<void> {
+    const finalConfig = { ...this.config, ...config }
     this.documents = []
     
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
-      config.onProgress?.(i + 1, files.length)
+      finalConfig.onProgress?.(i + 1, files.length)
       
       try {
         const text = await file.text()
@@ -27,7 +33,7 @@ export class SearchFacade {
           lastModified: file.lastModified
         })
       } catch (error) {
-        config.onError?.(`Failed to process file: ${file.name}`)
+        finalConfig.onError?.(`Failed to process file: ${file.name}`)
       }
     }
   }

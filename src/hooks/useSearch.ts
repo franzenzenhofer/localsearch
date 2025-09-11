@@ -33,8 +33,11 @@ export function useSearch() {
     if (files.length === 0) return;
     
     try {
-      await searchFacade.indexFiles(files);
-      setFileCount(searchFacade.getFileCount());
+      await searchFacade.processFiles(files, {
+        onProgress: (current, total) => setProgress({ current, total }),
+        onError: (error) => console.error('Processing error:', error)
+      });
+      setFileCount(searchFacade.getDocumentCount());
     } catch (error) {
       console.error('File indexing failed:', error);
     }

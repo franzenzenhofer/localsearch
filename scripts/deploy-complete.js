@@ -1,16 +1,23 @@
 #!/usr/bin/env node
 
 /**
- * Complete deployment script for LocalSearch
+ * Complete deployment script for FileSearch (filesearch.franzai.com)
+ * 
+ * 🚀 SAFE CACHING STRATEGY IMPLEMENTED:
+ * - Light caching with proxied mode for fingerprinted assets
+ * - Automated cache purging (when API permits)
+ * - DNS-only rollback capability
+ * - Comprehensive E2E testing
+ * 
  * Handles:
  * 1. Version bumping
- * 2. Pre-deployment tests (lint, typecheck)
- * 3. Building
- * 4. Deploying to Cloudflare Pages
- * 5. Running post-deploy tests
- * 6. Committing version changes
- * 7. Tagging release
- * 8. Pushing to GitHub
+ * 2. Pre-deployment tests (lint, typecheck, E2E)
+ * 3. Building with fingerprinted assets
+ * 4. Deploying to filesearch.franzai.com
+ * 5. Cache purging (if possible)
+ * 6. Running post-deploy verification
+ * 7. Atomic git commit with all changes
+ * 8. Tagging release and pushing to GitHub
  */
 
 import { execSync } from 'child_process'
@@ -95,10 +102,20 @@ async function deploy() {
     exec('npm run build')
     log.success('Production build completed')
 
-    // Step 4: Deploy to Cloudflare Pages
-    log.section('Deploying to Cloudflare Pages')
-    exec('wrangler pages deploy dist --project-name=localsearch')
-    log.success('Deployed to Cloudflare Pages (localsearch.franzai.com)')
+    // Step 4: Deploy to filesearch.franzai.com
+    log.section('Deploying to filesearch.franzai.com')
+    exec('wrangler pages deploy dist --project-name=filesearch --commit-dirty=true')
+    log.success('Deployed to filesearch.franzai.com with fingerprinted assets')
+    
+    // Step 4.5: Attempt cache purging (safe failure)
+    try {
+      log.step('Attempting cache purge for updated content')
+      exec('node scripts/purge-cache.js files')
+      log.success('Cache purged successfully')
+    } catch (error) {
+      log.warn('Cache purge failed (expected with current API permissions)')
+      log.info('Fingerprinted assets will cache properly without manual purge')
+    }
 
     // Step 5: Run post-deploy tests (allow minor failures)
     log.section('Running Post-Deploy Tests')

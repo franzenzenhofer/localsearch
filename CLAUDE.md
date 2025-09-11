@@ -42,7 +42,7 @@ npm run typecheck    # Validate TypeScript
 npm run deploy       # Complete automated deployment pipeline
 ```
 
-**🌐 DEPLOYMENT TARGET: https://localsearch.franzai.com/**
+**🌐 DEPLOYMENT TARGET: https://filesearch.franzai.com/**
 
 This runs:
 1. Version bump (minor)

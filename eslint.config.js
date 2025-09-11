@@ -79,6 +79,6 @@ export default [
     },
   },
   {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**', '.wrangler/**', 'tests/**', '*.config.*', 'cli.ts', 'build-extensions.js', 'extensions/shared/extension-core.ts', 'src/main.tsx'],
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**', '.wrangler/**', 'tests/**', '*.config.*', 'cli.ts', 'build-extensions.js', 'extensions/shared/extension-core.ts', 'src/main.tsx', 'scripts/**'],
   },
 ];

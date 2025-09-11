@@ -17,9 +17,9 @@ Object.defineProperty(globalThis, 'crypto', {
 
 // We need to import the worker class directly since it's exposed through Comlink
 // In a real scenario, this would be tested through the Comlink proxy
-describe('IndexingWorker', () => {
+describe('IndexingWorkerClass', () => {
   // Mock the worker functionality for unit testing
-  class MockIndexingWorker {
+  class MockIndexingWorkerClass {
     async processFiles(files: File[]) {
       const results = [];
       
@@ -81,10 +81,10 @@ describe('IndexingWorker', () => {
     }
   }
 
-  let worker: MockIndexingWorker;
+  let worker: MockIndexingWorkerClass;
 
   beforeEach(() => {
-    worker = new MockIndexingWorker();
+    worker = new MockIndexingWorkerClass();
   });
 
   describe('processFiles', () => {

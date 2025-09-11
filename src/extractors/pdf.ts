@@ -19,14 +19,8 @@ export class PDFExtractor extends BaseExtractor {
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
         const textContent = await page.getTextContent();
-        
-        const pageText = textContent.items
-          .map((item: any) => item.str || '')
-          .join('');
-          
-        if (pageText.trim()) {
-          textParts.push(pageText);
-        }
+        const pageText = textContent.items.map((item: any) => item.str || '').join('');
+        pageText.trim() && textParts.push(pageText);
       }
 
       return textParts.join('\n\n');

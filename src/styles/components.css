@@ -1,0 +1,22 @@
+@layer components {
+  .container {
+    @apply max-w-4xl mx-auto p-6;
+  }
+  
+  .header {
+    @apply text-center mb-8 pb-6 border-b border-gray-200 dark:border-gray-700;
+  }
+  
+  .header h1 {
+    @apply text-3xl font-bold mb-2 text-primary-600;
+  }
+  
+  .header p {
+    @apply text-gray-600 dark:text-gray-400;
+  }
+  
+  .theme-toggle {
+    @apply absolute top-6 right-6 px-3 py-2 bg-gray-100 dark:bg-gray-800 
+           rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors;
+  }
+}

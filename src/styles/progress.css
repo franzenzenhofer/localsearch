@@ -1,0 +1,21 @@
+@layer components {
+  .progress-hidden {
+    @apply hidden;
+  }
+  
+  .progress-visible {
+    @apply block mb-4;
+  }
+  
+  .progress-bar {
+    @apply w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2;
+  }
+  
+  .progress-fill {
+    @apply bg-primary-500 h-2 rounded-full transition-all duration-300;
+  }
+  
+  .stats {
+    @apply text-center text-sm text-gray-600 dark:text-gray-400;
+  }
+}

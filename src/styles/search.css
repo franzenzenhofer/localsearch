@@ -1,0 +1,20 @@
+@layer components {
+  .search-section {
+    @apply mb-8;
+  }
+  
+  .search-bar {
+    @apply flex gap-2 max-w-2xl mx-auto;
+  }
+  
+  .search-bar input {
+    @apply flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 
+           rounded-lg bg-white dark:bg-gray-800 focus:outline-none 
+           focus:ring-2 focus:ring-primary-500;
+  }
+  
+  .search-bar button {
+    @apply px-6 py-2 bg-primary-500 text-white rounded-lg 
+           hover:bg-primary-600 transition-colors;
+  }
+}

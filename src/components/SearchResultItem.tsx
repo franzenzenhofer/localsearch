@@ -1,45 +1,53 @@
-import { ListItem, Avatar, ListItemAvatar, ListItemText, Box, Typography, Chip } from '@mui/material'
-import { Description as DocumentIcon } from '@mui/icons-material'
+import { useState } from 'react'
+import { ListItem, Avatar, ListItemAvatar, ListItemText } from '@mui/material'
+import { Description as DocumentIcon, Image as ImageIcon } from '@mui/icons-material'
 import type { SearchResult } from '../core/types.js'
-import { SearchMetadata } from './SearchMetadata'
-import { ContentSnippets } from './ContentSnippets'
+import { FileDetailDialog } from './FileDetailDialog'
+import { Header } from './SearchResultItem/Header'
+import { Content } from './SearchResultItem/Content'
+import { isImageFile, createFileDetails } from './SearchResultItem/utils'
 
 interface SearchResultItemProps {
   result: SearchResult
 }
 
 export function SearchResultItem({ result }: SearchResultItemProps) {
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false)
+  
+  const isImage = isImageFile(result.metadata.name, result.metadata.type)
+  const fileDetails = createFileDetails(result)
+
   return (
-    <ListItem alignItems="flex-start" sx={{ px: 0 }}>
-      <ListItemAvatar>
-        <Avatar sx={{ bgcolor: 'primary.main' }}>
-          <DocumentIcon />
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText
-        primary={
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <Typography variant="subtitle1" component="span" sx={{ flexGrow: 1 }}>
-              {result.metadata.name}
-            </Typography>
-            <Chip 
-              label={`${Math.round(result.score * 100)}%`} 
-              size="small" 
-              color="primary" 
-              variant="outlined"
+    <>
+      <ListItem alignItems="flex-start" sx={{ px: 0 }}>
+        <ListItemAvatar>
+          <Avatar sx={{ bgcolor: 'primary.main' }}>
+            {isImage ? <ImageIcon /> : <DocumentIcon />}
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={
+            <Header 
+              filename={result.metadata.name}
+              score={result.score}
+              onDetailClick={() => setDetailDialogOpen(true)}
             />
-          </Box>
-        }
-        secondary={
-          <Box>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              {result.metadata.path}
-            </Typography>
-            <SearchMetadata metadata={result.metadata} />
-            <ContentSnippets result={result} />
-          </Box>
-        }
+          }
+          secondary={
+            <Content 
+              path={result.metadata.path}
+              metadata={result.metadata}
+              result={result}
+            />
+          }
+        />
+      </ListItem>
+      
+      <FileDetailDialog 
+        open={detailDialogOpen}
+        onClose={() => setDetailDialogOpen(false)}
+        fileDetails={fileDetails}
       />
-    </ListItem>
+    </>
   )
 }

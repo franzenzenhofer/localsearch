@@ -1,4 +1,6 @@
 import type { FileMetadata, DocumentContent } from './types.js'
+import { UniversalExtractor } from '../extractors/universal'
+import { ImageExtractor } from '../extractors/image'
 
 export class FileProcessor {
   static createMetadata(file: File): FileMetadata {
@@ -24,8 +26,17 @@ export class FileProcessor {
     }
   }
 
-  static async extractText(file: File, metadata: FileMetadata, extractor: any): Promise<string> {
-    const result = await extractor.extract(file, metadata)
-    return typeof result === 'string' ? result : result.text
+  static async extractText(file: File, metadata: FileMetadata): Promise<string> {
+    const extension = `.${metadata.extension}`
+    
+    // Use ImageExtractor for image files
+    if (ImageExtractor.supportedExtensions.includes(extension)) {
+      const imageExtractor = new ImageExtractor()
+      return await imageExtractor.extract(file)
+    }
+    
+    // Use UniversalExtractor for all other files
+    const universalExtractor = new UniversalExtractor()
+    return await universalExtractor.extract(file)
   }
 }

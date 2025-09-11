@@ -1,6 +1,6 @@
-import { useRef } from 'react'
-import { Box, Alert } from '@mui/material'
-import { UploadArea } from './UploadArea'
+import { Box, Typography, Divider } from '@mui/material'
+import { FolderUpload } from './FolderUpload'
+import { FileSelect } from './FileSelect'
 
 interface FileUploadProps {
   onUpload: (files: File[]) => void
@@ -8,38 +8,19 @@ interface FileUploadProps {
 }
 
 export function FileUpload({ onUpload, fileCount }: FileUploadProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const handleFileSelect = (event: { target: { files: FileList | null } }) => {
-    const files = Array.from(event.target.files || [])
-    if (files.length > 0) {
-      onUpload(files)
-    }
-  }
-
-  const handleClick = () => {
-    fileInputRef.current?.click()
-  }
-
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <Box sx={{ position: 'relative' }}>
-        <input
-          ref={fileInputRef}
-          type="file"
-          multiple
-          accept=".pdf,.docx,.txt,.md,.csv,.html"
-          onChange={handleFileSelect}
-          style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }}
-        />
-        <UploadArea onClick={handleClick} />
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <FolderUpload onUpload={onUpload} fileCount={fileCount} />
+      
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Divider sx={{ flex: 1, borderColor: '#000000', borderWidth: 1 }} />
+        <Typography variant="body2" sx={{ fontWeight: 600, color: '#424242' }}>
+          OR
+        </Typography>
+        <Divider sx={{ flex: 1, borderColor: '#000000', borderWidth: 1 }} />
       </Box>
-
-      {fileCount > 0 && (
-        <Alert severity="success" variant="filled">
-          {fileCount} files indexed and ready to search
-        </Alert>
-      )}
+      
+      <FileSelect onUpload={onUpload} />
     </Box>
   )
 }

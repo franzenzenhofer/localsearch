@@ -53,3 +53,6 @@ playwright-report/
 
 # Browser extension builds
 extension/
+
+# Trash folder
+.trash/

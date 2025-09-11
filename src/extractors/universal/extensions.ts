@@ -1,0 +1,39 @@
+export const supportedExtensions = [
+  // Microsoft Office
+  '.xlsx', '.xls', '.pptx', '.ppt', '.docx', '.doc',
+  // OpenOffice/LibreOffice
+  '.odt', '.ods', '.odp', '.odg', '.odf',
+  // Rich Text
+  '.rtf',
+  // Data formats
+  '.json', '.xml', '.yaml', '.yml', '.toml', '.ini', '.cfg', '.conf',
+  // Programming languages
+  '.js', '.ts', '.jsx', '.tsx', '.py', '.java', '.cpp', '.c', '.h', '.hpp',
+  '.cs', '.vb', '.php', '.rb', '.go', '.rs', '.swift', '.kt', '.dart', '.scala',
+  '.clj', '.hs', '.lua', '.r', '.m', '.pl', '.pm', '.tcl', '.sh', '.bat', '.ps1',
+  '.sql', '.css', '.scss', '.sass', '.less', '.styl',
+  // Web technologies
+  '.html', '.htm', '.xhtml', '.vue', '.svelte', '.astro',
+  // Configuration and build
+  '.makefile', '.dockerfile', '.gradle', '.maven', '.sbt', '.cmake', '.ninja',
+  '.bazel', '.buck', '.gn', '.pro', '.pri', '.qbs',
+  // Package managers
+  '.package', '.cabal', '.stack', '.rebar', '.mix', '.cargo', '.composer',
+  '.gemfile', '.podfile', '.cartfile', '.brewfile',
+  // Archive formats (extract and process contents)
+  '.zip', '.7z', '.tar', '.gz', '.bz2', '.xz', '.rar',
+  // Logs and data
+  '.log', '.out', '.err', '.trace', '.debug'
+]
+
+export const textExtensions = [
+  '.js', '.ts', '.jsx', '.tsx', '.py', '.java', '.cpp', '.c', '.h', '.hpp',
+  '.cs', '.vb', '.php', '.rb', '.go', '.rs', '.swift', '.kt', '.dart', '.scala',
+  '.clj', '.hs', '.lua', '.r', '.m', '.pl', '.pm', '.tcl', '.sh', '.bat', '.ps1',
+  '.sql', '.css', '.scss', '.sass', '.less', '.styl', '.html', '.htm', '.xhtml',
+  '.vue', '.svelte', '.astro', '.log', '.out', '.err', '.trace', '.debug'
+]
+
+export const archiveExtensions = ['.zip', '.7z', '.tar', '.gz', '.bz2', '.xz', '.rar']
+
+export const structuredExtensions = ['.json', '.xml', '.yaml', '.yml', '.toml']

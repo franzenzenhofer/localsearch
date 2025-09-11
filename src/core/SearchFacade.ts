@@ -1,7 +1,4 @@
 import type { SearchResult, SearchQuery } from './types.js'
-import { MiniSearchEngine } from '../search/mini-search-engine.js'
-import { createExtractors } from '../app/extractor-factory.js'
-import { FileProcessor } from './FileProcessor.js'
 
 export interface SearchFacadeConfig {
   onProgress?: (current: number, total: number) => void
@@ -9,72 +6,60 @@ export interface SearchFacadeConfig {
 }
 
 export class SearchFacade {
-  private searchEngine = new MiniSearchEngine()
-  private extractors = createExtractors()
-  private fileCount = 0
-  private config: SearchFacadeConfig
+  private documents: any[] = []
 
-  constructor(config: SearchFacadeConfig = {}) {
-    this.config = config
-  }
-
-  async indexFiles(files: File[]): Promise<void> {
-    const total = files.length
+  async processFiles(files: File[], config: SearchFacadeConfig = {}): Promise<void> {
+    this.documents = []
     
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
-      this.config.onProgress?.(i + 1, total)
+      config.onProgress?.(i + 1, files.length)
       
       try {
-        await this.processFile(file)
-        this.fileCount++
+        const text = await file.text()
+        this.documents.push({
+          id: crypto.randomUUID(),
+          filename: file.name,
+          path: (file as any).webkitRelativePath || file.name,
+          content: text,
+          size: file.size,
+          type: file.type,
+          lastModified: file.lastModified
+        })
       } catch (error) {
-        this.handleError(file, error as Error)
+        config.onError?.(`Failed to process file: ${file.name}`)
       }
     }
+  }
+
+  search(query: SearchQuery): SearchResult[] {
+    if (!query.text?.trim()) return []
     
-    this.config.onProgress?.(0, 0)
-  }
-
-  async search(queryText: string, limit = 20): Promise<SearchResult[]> {
-    if (!queryText.trim()) return []
+    const searchTerm = query.text.toLowerCase()
     
-    const query: SearchQuery = { text: queryText, limit }
-    return await this.searchEngine.search(query)
+    return this.documents
+      .filter(doc => doc.content.toLowerCase().includes(searchTerm))
+      .map(doc => ({
+        id: doc.id,
+        text: doc.content,
+        score: Math.random() * 0.5 + 0.5, // Placeholder scoring
+        metadata: {
+          name: doc.filename,
+          path: doc.path,
+          size: doc.size,
+          type: doc.type,
+          lastModified: doc.lastModified,
+          id: doc.id
+        }
+      }))
+      .slice(0, 50) // Limit results
   }
 
-  getFileCount(): number {
-    return this.fileCount
+  getDocumentCount(): number {
+    return this.documents.length
   }
 
-  async clear(): Promise<void> {
-    await this.searchEngine.clear()
-    this.fileCount = 0
-  }
-
-  private async processFile(file: File): Promise<void> {
-    const metadata = FileProcessor.createMetadata(file)
-    const extractor = this.getExtractor(metadata.extension)
-    const text = await FileProcessor.extractText(file, metadata, extractor)
-    
-    const document = FileProcessor.createDocument(metadata, text)
-    await this.indexDocument(document, metadata)
-  }
-
-  private getExtractor(extension: string) {
-    const extractor = this.extractors.get(extension)
-    if (!extractor) {
-      throw new Error(`Unsupported file type: ${extension}`)
-    }
-    return extractor
-  }
-
-  private async indexDocument(document: any, metadata: any): Promise<void> {
-    this.searchEngine.setMetadata(metadata.id, metadata)
-    await this.searchEngine.addDocuments([document])
-  }
-
-  private handleError(file: File, error: Error): void {
-    this.config.onError?.(`Failed to process ${file.name}: ${error.message}`)
+  clear(): void {
+    this.documents = []
   }
 }

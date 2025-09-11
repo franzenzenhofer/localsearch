@@ -1,3 +1,10 @@
 name = "localsearch"
+main = "_worker.js"
 compatibility_date = "2025-09-11"
-pages_build_output_dir = "./dist"
+
+[assets]
+directory = "./dist"
+
+[[routes]]
+pattern = "localsearch.franzai.com/*"
+zone_name = "franzai.com"

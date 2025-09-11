@@ -1,0 +1,52 @@
+{
+  "name": "localsearch",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest --coverage",
+    "test:e2e": "playwright test",
+    "lint": "eslint . --ext ts,js,tsx,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,js,tsx,jsx --fix",
+    "type-check": "tsc --noEmit",
+    "deploy": "npm run test:run && npm run lint && npm run type-check && npm run build && npm run test:e2e",
+    "deploy:cf": "npm run deploy && wrangler pages deploy dist --project-name=localsearch",
+    "deploy:gh": "npm run deploy && gh-pages -d dist"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.0",
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.5.0",
+    "@types/papaparse": "^5.3.16",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
+    "@vitest/coverage-v8": "^2.1.0",
+    "@vitest/ui": "^2.1.0",
+    "eslint": "^9.11.0",
+    "gh-pages": "^6.1.0",
+    "happy-dom": "^15.7.0",
+    "typescript": "^5.8.3",
+    "vite": "^5.4.8",
+    "vite-plugin-pwa": "^0.20.5",
+    "vitest": "^2.1.0",
+    "workbox-window": "^7.1.0"
+  },
+  "dependencies": {
+    "comlink": "^4.4.1",
+    "dexie": "^3.2.4",
+    "fflate": "^0.8.1",
+    "franc": "^6.1.0",
+    "jschardet": "^3.0.0",
+    "mammoth": "^1.6.0",
+    "minisearch": "^6.3.0",
+    "papaparse": "^5.4.1",
+    "pdfjs-dist": "^4.0.269",
+    "stopword": "^2.0.8"
+  }
+}

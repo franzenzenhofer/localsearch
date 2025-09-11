@@ -29,7 +29,7 @@ const info = (msg) => log(COLORS.blue, 'ℹ️ ', msg)
 const test = (msg) => log(COLORS.cyan, '🧪', msg)
 
 // Configuration - will be updated after deployment
-const SITE_URL = 'https://40d7a946.localsearch-c21.pages.dev'
+const SITE_URL = 'https://localsearch.franzai.com'
 const TEST_TIMEOUT = 30000
 
 class PostDeploymentTester {

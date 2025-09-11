@@ -1,10 +1,7 @@
 name = "localsearch"
-main = "_worker.js"
+pages_build_output_dir = "./dist"
 compatibility_date = "2025-09-11"
 
-[assets]
-directory = "./dist"
-
-[[routes]]
-pattern = "localsearch.franzai.com/*"
-zone_name = "franzai.com"
+# CRITICAL: Always deploy to localsearch.franzai.com
+# Never use wrangler deploy directly - always use npm run deploy
+# Custom domain configured via Cloudflare Pages dashboard

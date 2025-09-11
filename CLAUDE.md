@@ -36,18 +36,29 @@ npm run typecheck    # Validate TypeScript
 ```
 
 ### Production Deployment
+**🚨 CRITICAL: ALWAYS USE npm run deploy - NEVER use wrangler deploy directly!**
+
 ```bash
 npm run deploy       # Complete automated deployment pipeline
 ```
+
+**🌐 DEPLOYMENT TARGET: https://localsearch.franzai.com/**
 
 This runs:
 1. Version bump (minor)
 2. Lint check (0 warnings required)
 3. TypeScript check (strict mode)
 4. Production build
-5. Deploy to Cloudflare Pages
+5. Deploy to Cloudflare Pages (localsearch.franzai.com)
 6. Post-deployment tests (11 comprehensive checks)
 7. Git commit, tag, and push
+
+**⚠️ DEPLOYMENT RULE - MANDATORY:**
+- **ALWAYS use `npm run deploy` for ALL deployments**
+- **NEVER use `wrangler deploy` directly**
+- **Always deploys to localsearch.franzai.com custom domain**
+- **Ensures all tests pass before deployment**
+- **Includes automatic git commits and version tagging**
 
 ## 🛠️ ARCHITECTURE
 

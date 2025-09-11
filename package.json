@@ -44,17 +44,21 @@
     "workbox-window": "^7.1.0"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "clsx": "^2.1.1",
     "comlink": "^4.4.1",
     "dexie": "^3.2.4",
     "fflate": "^0.8.1",
     "franc": "^6.1.0",
     "jschardet": "^3.0.0",
     "lucide": "^0.544.0",
+    "lucide-react": "^0.544.0",
     "mammoth": "^1.6.0",
     "minisearch": "^6.3.0",
     "papaparse": "^5.4.1",
     "pdfjs-dist": "^4.0.269",
     "stopword": "^2.0.8",
+    "tailwind-merge": "^3.3.1",
     "tsx": "^4.20.5"
   }
 }

@@ -1,22 +1,34 @@
 @layer components {
   .container {
-    @apply max-w-4xl mx-auto p-6;
+    @apply w-full max-w-none px-4 sm:px-6 lg:px-8;
+    @apply mx-auto;
+    max-width: min(100vw - 2rem, 1200px);
   }
   
   .header {
-    @apply text-center mb-8 pb-6 border-b border-gray-200 dark:border-gray-700;
+    @apply text-center mb-8 pb-6 relative;
+    @apply bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl;
+    @apply shadow-lg border border-slate-200/50 dark:border-slate-700/50;
+    padding: clamp(1rem, 4vw, 3rem);
   }
   
   .header h1 {
-    @apply text-3xl font-bold mb-2 text-primary-600;
+    @apply text-slate-800 dark:text-slate-100 font-bold mb-2;
+    font-size: clamp(2rem, 6vw, 3.5rem);
   }
   
   .header p {
-    @apply text-gray-600 dark:text-gray-400;
+    @apply text-slate-600 dark:text-slate-400;
+    font-size: clamp(0.875rem, 3vw, 1.125rem);
   }
   
   .theme-toggle {
-    @apply absolute top-6 right-6 px-3 py-2 bg-gray-100 dark:bg-gray-800 
-           rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors;
+    @apply absolute top-4 right-4 p-3 bg-slate-100/80 dark:bg-slate-700/80
+           backdrop-blur-sm rounded-xl hover:bg-slate-200/80 dark:hover:bg-slate-600/80
+           transition-all duration-200 border border-slate-200/50 dark:border-slate-600/50;
+  }
+  
+  .theme-icon {
+    @apply w-5 h-5 text-slate-700 dark:text-slate-300;
   }
 }

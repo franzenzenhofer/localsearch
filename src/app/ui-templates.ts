@@ -5,7 +5,12 @@ export const UI_TEMPLATES = {
         <h1>LocalSearch</h1>
         <p>Private, offline folder search</p>
         <button id="theme-toggle" class="theme-toggle">
-          <span class="theme-icon">Light/Dark</span>
+          <svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          </svg>
         </button>
       </header>
       

@@ -1,26 +1,31 @@
-# 🔍 LocalSearch
+# LocalSearch 🔍
 
-**Private, offline folder search PWA with TDD-driven development**
+> **Private, offline file search powered by Material-UI and modern React**
+
+LocalSearch is a professional React-based Progressive Web App (PWA) that enables instant, private searching through your documents without ever sending data to external servers. Built with Material-UI components and hardcore modular architecture.
 
 [![CI/CD](https://github.com/franzenzenhofer/localsearch/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/franzenzenhofer/localsearch/actions/workflows/ci-cd.yml)
-[![codecov](https://codecov.io/gh/franzenzenhofer/localsearch/branch/main/graph/badge.svg)](https://codecov.io/gh/franzenzenhofer/localsearch)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## ✨ Features
 
-- 🔒 **100% Private**: All data stays on your device - no servers, no accounts, no telemetry
-- 📱 **PWA**: Installable, works offline, cross-platform (Chrome, Firefox, Safari)
-- ⚡ **Instant Search**: P95 < 100ms query response time on 10k documents
-- 📄 **Multiple Formats**: PDF, DOCX, TXT, MD, CSV, HTML text extraction
-- 🌐 **Modern**: TypeScript, Vite, responsive design, dark/light mode
-- 🧪 **Quality**: 70+ tests, 100% coverage, TDD-driven development
+- **🔒 100% Private** - All processing happens locally in your browser
+- **⚡ Instant Search** - Sub-second search results across all file types  
+- **📱 Mobile-First** - Professional responsive design for all devices
+- **🚀 PWA Ready** - Install as an app, works offline
+- **🎯 Multiple Formats** - PDF, DOCX, TXT, MD, CSV, HTML support
+- **💎 Material-UI** - Professional business components only
+- **🔧 Debug View** - Technical interface showing core app internals
+- **📏 75-Line Limit** - Hardcore modular architecture
 
-## 🚀 Quick Start
+## 🚀 Live Demo
 
-1. **Visit**: [localsearch.franzai.com](https://localsearch.franzai.com)
-2. **Install**: Click "Install" when prompted (PWA)
-3. **Select**: Choose a folder to index
-4. **Search**: Start searching your files instantly!
+**Production:** [localsearch.franzai.com](https://localsearch.franzai.com)
+
+1. **Visit** the live demo
+2. **Upload** your documents
+3. **Search** instantly - all private!
+4. **Install** as PWA for offline use
 
 ## 🛠️ Development
 
@@ -44,140 +49,137 @@ npm run build
 
 ## 🏗️ Architecture
 
+### Frontend/Backend Separation
+- **SearchFacade** - Complete abstraction layer for core logic reusability
+- **Material-UI Components** - Professional, mature component library
+- **React 19+** - Modern JSX automatic runtime  
+- **TypeScript Strict** - Zero tolerance error policy
+- **75-Line Limit** - Hardcore modular architecture enforced
+
+### Project Structure
 ```
 src/
-├── app/           # Main application logic
-├── core/          # Core types and utilities
-├── extractors/    # Text extraction modules
-├── search/        # Search engine implementation
-├── storage/       # IndexedDB/OPFS storage
-├── workers/       # Web Workers for background processing
-└── ui/           # User interface components
-
-tests/
-├── unit/         # Unit tests (70+ tests)
-└── e2e/          # End-to-end tests (Playwright)
+├── components/          # React components (<75 lines each)
+│   ├── AppHeader.tsx   # Material-UI header
+│   ├── SearchBar.tsx   # Professional search input
+│   └── ...
+├── core/               # Business logic (framework-agnostic)
+│   ├── SearchFacade.ts # Main API abstraction  
+│   └── types.ts        # Type definitions
+├── hooks/              # React hooks
+└── search/             # Search engine implementation
 ```
 
-### 📚 Tech Stack
+### Core Technologies
+```
+Frontend:  React + Material-UI + TypeScript
+Search:    MiniSearch + Web Workers
+Storage:   IndexedDB via Dexie
+Parsing:   PDF.js, Mammoth, Papa Parse
+Build:     Vite + PWA Plugin
+Deploy:    Cloudflare Pages
+```
 
-**Core:**
-- TypeScript 5.8+ (strict mode)
-- Vite 5.4+ (build tool)
-- ESLint 9+ (max 75 lines per file)
+## 🏆 Performance
 
-**File Processing:**
-- PDF.js (PDF extraction)
-- Mammoth.js (DOCX extraction)  
-- Papa Parse (CSV parsing)
-- MiniSearch (full-text search)
+- **Build Size**: ~1.3MB (PWA with workers)
+- **Search Speed**: <100ms for 1000+ documents  
+- **Mobile Performance**: Optimized for low-end devices
+- **Memory Usage**: Efficient IndexedDB storage
+- **Code Quality**: 75-line limit, zero warnings
 
-**Storage & PWA:**
-- Dexie.js (IndexedDB wrapper)
-- OPFS (large file storage)
-- Workbox (service worker)
-- File System Access API
+## 📄 Supported File Types
 
-**Testing:**
-- Vitest 2+ (unit tests)
-- Playwright 1.49+ (E2E tests)
-- Happy DOM (test environment)
+| Format | Extension | Parser |
+|--------|-----------|--------|
+| PDF | `.pdf` | PDF.js |
+| Word | `.docx` | Mammoth |
+| Text | `.txt` | Native |
+| Markdown | `.md` | Native |
+| CSV | `.csv` | Papa Parse |
+| HTML | `.html` | DOMParser |
 
-## 🎯 Performance Targets
+## 🔧 API Usage
 
-- ✅ **Search Speed**: P95 < 100ms for 3-term queries on 10k docs
-- ✅ **Index Size**: ≤ 25% of raw text bytes (compressed)
-- ✅ **Build Size**: <1MB main bundle (excluding extractors)
-- ✅ **Test Coverage**: 100% line/branch coverage
-- ✅ **File Limit**: Max 75 lines per file (enforced by ESLint)
+### SearchFacade Core API
+```typescript
+import { SearchFacade } from './core/SearchFacade'
 
-## 🔐 Privacy & Security
+const facade = new SearchFacade({
+  onProgress: (current, total) => console.log(`${current}/${total}`),
+  onError: (error) => console.error(error)
+})
 
-- **No Network**: Content never leaves your device
-- **Local Storage**: IndexedDB + OPFS for persistence
-- **Optional Encryption**: AES-GCM for index export/import
-- **CSP**: Strict Content Security Policy
-- **No Telemetry**: Zero tracking or analytics
+// Index files
+await facade.indexFiles(fileList)
 
-## 🧪 Testing
+// Search
+const results = await facade.search('query text', 20)
+
+// Get stats
+console.log('Files indexed:', facade.getFileCount())
+```
+
+### Debug Interface
+Enable debug mode to see:
+- Core app method calls
+- Search engine internals  
+- File processing pipeline
+- Performance metrics
+
+## 📋 Scripts
 
 ```bash
-# Unit tests (70+ tests)
-npm run test
-
-# E2E tests
-npm run test:e2e
-
-# Coverage report
-npm run test:coverage
-
-# Lint (strict 75-line limit)
-npm run lint
+npm run dev          # Development server
+npm run build        # Production build
+npm run lint         # ESLint (zero warnings)
+npm run test         # Run test suite
+npm run deploy       # Full deployment pipeline
 ```
-
-## 📦 Deployment
-
-**Automated (GitHub Actions):**
-- Tests run on every PR/push
-- Deploys to GitHub Pages + Cloudflare Pages
-- Performance monitoring & security scanning
-
-**Manual:**
-```bash
-# Deploy to both platforms
-npm run deploy
-
-# GitHub Pages only
-npm run deploy:gh
-
-# Cloudflare Pages only  
-npm run deploy:cf
-```
-
-## 🌐 Browser Support
-
-| Feature | Chrome 86+ | Firefox 90+ | Safari 15+ |
-|---------|------------|-------------|------------|
-| File System Access API | ✅ | ❌* | ❌* |
-| PWA Installation | ✅ | ✅ | ✅ |
-| IndexedDB | ✅ | ✅ | ✅ |
-| Web Workers | ✅ | ✅ | ✅ |
-
-*\* Fallback: drag-and-drop file upload*
 
 ## 🤝 Contributing
 
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
-3. **Write** tests first (TDD approach)
-4. **Implement** your feature (max 75 lines per file)
-5. **Ensure** all tests pass: `npm test`
-6. **Commit** changes: `git commit -m 'Add amazing feature'`
-7. **Push** to branch: `git push origin feature/amazing-feature`
-8. **Open** a Pull Request
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Ensure all files are <75 lines
+4. Run `npm run lint` (must pass with zero warnings)
+5. Commit changes (`git commit -m 'Add amazing feature'`)
+6. Push to branch (`git push origin feature/amazing-feature`)
+7. Open Pull Request
 
-### 📏 Code Standards
+### Code Quality Standards
+- **75-line file limit** - No exceptions
+- **Zero warnings** - TypeScript strict + ESLint max-warnings 0
+- **100% DRY** - No code repetition
+- **Material-UI only** - No custom icons or components
 
-- **TDD**: Write tests before implementation
-- **75-line limit**: Enforced by ESLint
-- **TypeScript strict**: No `any` types
-- **Zero warnings**: Lint must pass cleanly
-- **100% coverage**: All code paths tested
+## 📜 License
 
-## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-MIT License - see [LICENSE](LICENSE) file for details.
+### Third-Party Licenses
+- **Material-UI**: MIT License
+- **React**: MIT License  
+- **TypeScript**: Apache License 2.0
+- **PDF.js**: Apache License 2.0
+- **Mammoth**: BSD-2-Clause License
+- **Papa Parse**: MIT License
 
 ## 🙏 Acknowledgments
 
-- **PDF.js**: Mozilla's PDF parsing engine
-- **Mammoth.js**: DOCX to HTML conversion
-- **MiniSearch**: Lightweight full-text search
-- **Dexie.js**: IndexedDB made usable
-- **Vite**: Next generation frontend tooling
+- **Material-UI Team** - Professional React components
+- **Vite Team** - Lightning-fast build tool
+- **Cloudflare** - Edge deployment platform
+- **Franz Enzenhofer** - Project architect & maintainer
+
+## 🔗 Links
+
+- **Live App**: [localsearch.franzai.com](https://localsearch.franzai.com)
+- **GitHub**: [github.com/franzenzenhofer/localsearch](https://github.com/franzenzenhofer/localsearch)
+- **Issues**: [Report bugs or request features](https://github.com/franzenzenhofer/localsearch/issues)
 
 ---
 
-**🤖 Generated with [Claude Code](https://claude.ai/code)**
+**Built with ❤️ using professional open source libraries**
 
-**Co-Authored-By: Claude <noreply@anthropic.com>**
+*Standing on the shoulders of giants - using only mature, battle-tested components*

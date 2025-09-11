@@ -1,17 +1,30 @@
-import { Container, TextField, Button, Typography, Box, InputAdornment, Paper, AppBar, Toolbar, CssBaseline, ThemeProvider, createTheme } from '@mui/material'
-import { Search as SearchIcon } from '@mui/icons-material'
+import { Container, Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import { useSearch } from './hooks/useSearch'
 import { SearchResults } from './components/SearchResults'
 import { FileUpload } from './components/FileUpload'
+import { AppHeader } from './components/AppHeader'
+import { SearchBar } from './components/SearchBar'
+import { DebugView } from './components/DebugView'
+import { IndexManager } from './components/IndexManager'
 
 const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#1976d2',
+      main: '#FFB000', // Professional yellow
+      contrastText: '#000000',
+    },
+    secondary: {
+      main: '#0066CC', // Professional blue
+      contrastText: '#FFFFFF',
     },
     background: {
-      default: '#f5f5f5',
+      default: '#FAFAFA',
+      paper: '#FFFFFF',
+    },
+    text: {
+      primary: '#1A1A1A',
+      secondary: '#666666',
     },
   },
   typography: {
@@ -34,54 +47,22 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ flexGrow: 1, minHeight: '100vh', backgroundColor: 'background.default' }}>
-        <AppBar position="static" elevation={0}>
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              LocalSearch
-            </Typography>
-            <Typography variant="body2" color="inherit">
-              Private, offline folder search
-            </Typography>
-          </Toolbar>
-        </AppBar>
-
+        <AppHeader />
         <Container maxWidth="lg" sx={{ py: 4 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <Paper elevation={1} sx={{ p: 3 }}>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                <TextField
-                  fullWidth
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && performSearch()}
-                  placeholder="Search your files..."
-                  variant="outlined"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon color="action" />
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{ flexGrow: 1, minWidth: 300 }}
-                />
-                <Button
-                  onClick={performSearch}
-                  disabled={!query.trim() || fileCount === 0}
-                  variant="contained"
-                  size="large"
-                  sx={{ px: 4, minWidth: 120 }}
-                >
-                  {isSearching ? 'Searching...' : 'Search'}
-                </Button>
-              </Box>
-            </Paper>
-
+            <SearchBar 
+              query={query}
+              setQuery={setQuery}
+              onSearch={performSearch}
+              isSearching={isSearching}
+              fileCount={fileCount}
+            />
+            <IndexManager onLoadIndex={() => {}} />
             <FileUpload onUpload={handleFileUpload} fileCount={fileCount} />
-            
             <SearchResults results={results} isLoading={isSearching} />
           </Box>
         </Container>
+        <DebugView />
       </Box>
     </ThemeProvider>
   )

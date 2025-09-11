@@ -1,4 +1,3 @@
-import React from 'react';
 import { MagnifyingGlassIcon, DocumentIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import type { SearchResult } from '../core/types.js';
 

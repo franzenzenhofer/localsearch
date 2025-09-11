@@ -70,7 +70,8 @@ export class SearchFacade {
       hash: await this.generateHash(file)
     };
 
-    const extractedText = await extractor.extract(file, metadata);
+    const result = await extractor.extract(file, metadata);
+    const extractedText = typeof result === 'string' ? result : result.text;
     
     const document: DocumentContent = {
       id: metadata.id,

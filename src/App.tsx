@@ -1,5 +1,4 @@
-import React from 'react'
-import { SearchIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useDarkMode } from './hooks/useDarkMode'
 import { useSearch } from './hooks/useSearch'
 import { SearchResults } from './components/SearchResults'
@@ -41,7 +40,7 @@ function App() {
             <div className="search-section">
               <div className="search-bar">
                 <div className="relative flex-1">
-                  <SearchIcon className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+                  <MagnifyingGlassIcon className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
                   <input
                     type="text"
                     value={query}

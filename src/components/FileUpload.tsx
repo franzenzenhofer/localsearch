@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { CloudArrowUpIcon, DocumentPlusIcon } from '@heroicons/react/24/outline';
 
 interface FileUploadProps {

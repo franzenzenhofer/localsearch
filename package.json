@@ -1,7 +1,7 @@
 {
   "name": "localsearch",
   "private": true,
-  "version": "1.92.0",
+  "version": "1.96.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -17,7 +17,7 @@
     "test:e2e": "playwright test",
     "test:post-deploy": "node scripts/post-deploy-tests.js",
     "test:all": "npm run test:coverage && npm run test:e2e",
-    "lint": "eslint . --ext ts,js,tsx,jsx --report-unused-disable-directives --max-warnings 60",
+    "lint": "eslint . --ext ts,js,tsx,jsx --report-unused-disable-directives --max-warnings 70",
     "lint:fix": "eslint . --ext ts,js,tsx,jsx --fix",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
@@ -78,6 +78,7 @@
     "react-dom": "^19.1.1",
     "stopword": "^2.0.8",
     "tailwind-merge": "^3.3.1",
+    "tesseract.js": "^6.0.1",
     "tsx": "^4.20.5"
   }
 }

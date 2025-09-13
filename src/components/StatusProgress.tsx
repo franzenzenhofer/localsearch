@@ -1,4 +1,5 @@
 import { Box, LinearProgress, Typography, Chip } from "@mui/material";
+import { COLORS } from "../constants/colors";
 
 interface StatusProgressProps {
   processedFiles: number;
@@ -14,14 +15,14 @@ export function StatusProgress({
   return (
     <Box sx={{ mb: 3 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-        <Typography variant="h6" sx={{ color: "#FFFFFF", fontWeight: "bold" }}>
+        <Typography variant="h6" sx={{ color: COLORS.BLACK, fontWeight: "bold" }}>
           Overall Progress
         </Typography>
         <Chip
           label={`${Math.round(progress)}%`}
           sx={{
-            backgroundColor: "#FFD700",
-            color: "#000000",
+            backgroundColor: COLORS.GOLD,
+            color: COLORS.BLACK,
             fontWeight: "bold",
           }}
         />
@@ -32,13 +33,13 @@ export function StatusProgress({
         sx={{
           height: 12,
           borderRadius: 6,
-          backgroundColor: "#333333",
+          backgroundColor: COLORS.WHITE,
           "& .MuiLinearProgress-bar": {
-            backgroundColor: "#FFD700",
+            backgroundColor: COLORS.GOLD,
           },
         }}
       />
-      <Typography variant="body2" sx={{ color: "#CCCCCC", mt: 1 }}>
+      <Typography variant="body2" sx={{ color: COLORS.BLACK, mt: 1 }}>
         {processedFiles} of {totalFiles} files processed
       </Typography>
     </Box>

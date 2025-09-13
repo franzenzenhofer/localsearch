@@ -1,40 +1,25 @@
 /**
- * OCR PROCESSOR - Main Processing Logic (Under 75 lines)
+ * OCR PROCESSOR - REAL TESSERACT.JS OCR (Under 75 lines)
  */
 
-import {
-  validateOCRFile,
-  validateImageDimensions,
-  analyzeImageContent,
-} from "./ocr-validation";
+import Tesseract from 'tesseract.js';
+import { validateOCRFile, validateImageDimensions } from "./ocr-validation";
 
 export async function processOCRImage(file: File): Promise<string> {
-  // Validate file first
   const validationError = validateOCRFile(file);
   if (validationError) return validationError;
 
   try {
     const img = new window.Image();
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    // EDGE CASE 4: Canvas not supported
-    if (!ctx) {
-      return "Canvas not supported in this browser - cannot perform OCR";
-    }
-
     const imageUrl = URL.createObjectURL(file);
 
     return new Promise((resolve) => {
-      // EDGE CASE 5: Image load timeout after 30 seconds
       const timeout = window.setTimeout(() => {
         URL.revokeObjectURL(imageUrl);
-        resolve(
-          "Image processing timeout - OCR could not complete within 30 seconds",
-        );
+        resolve("OCR timeout after 30 seconds");
       }, 30000);
 
-      img.onload = () => {
+      img.onload = async () => {
         try {
           window.clearTimeout(timeout);
 
@@ -45,50 +30,49 @@ export async function processOCRImage(file: File): Promise<string> {
             return;
           }
 
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-
-          // EDGE CASE 8: Analyze image for text content potential
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const hasContent = analyzeImageContent(imageData);
+          // REAL OCR WITH TESSERACT.JS
+          console.log(`🔍 OCR: Starting text extraction for ${file.name} (${file.size} bytes)`);
+          const result = await Tesseract.recognize(file, 'eng', {
+            logger: (m) => console.log(`🔍 OCR Progress: ${m.status} ${m.progress ? Math.round(m.progress * 100) + '%' : ''}`)
+          });
 
           URL.revokeObjectURL(imageUrl);
 
-          if (!hasContent) {
-            resolve(
-              "Image appears to contain no text content - solid color or blank image detected",
-            );
+          const extractedText = result.data.text.trim();
+          
+          console.log(`🔍 OCR: Extracted ${extractedText.length} characters from ${file.name}`);
+          console.log(`🔍 OCR: Text preview: "${extractedText.substring(0, 100)}${extractedText.length > 100 ? '...' : ''}"`);
+          
+          if (extractedText.length === 0) {
+            console.log(`⚠️ OCR: No text found in ${file.name}`);
+            resolve("No text found in image");
           } else {
-            resolve(
-              "OCR processing completed - text extraction functionality ready for implementation",
-            );
+            console.log(`✅ OCR: Successfully extracted text from ${file.name}`);
+            resolve(extractedText);
           }
+
         } catch (err) {
           window.clearTimeout(timeout);
           URL.revokeObjectURL(imageUrl);
-          resolve("Image processing error - " + (err as Error).message);
+          resolve("OCR processing error: " + (err as Error).message);
         }
       };
 
       img.onerror = () => {
         window.clearTimeout(timeout);
         URL.revokeObjectURL(imageUrl);
-        resolve(
-          "Failed to load image - file may be corrupted or unsupported format",
-        );
+        resolve("Failed to load image for OCR");
       };
 
-      // EDGE CASE 9: Handle different image formats safely
       try {
         img.src = imageUrl;
       } catch {
         window.clearTimeout(timeout);
         URL.revokeObjectURL(imageUrl);
-        resolve("Cannot load image source - invalid file format");
+        resolve("Cannot load image source for OCR");
       }
     });
   } catch (error) {
-    return "OCR initialization failed - " + (error as Error).message;
+    return "OCR initialization failed: " + (error as Error).message;
   }
 }

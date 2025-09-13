@@ -96,8 +96,7 @@ export function CompleteDebugView() {
     <Paper
       sx={{
         p: 2,
-        backgroundColor: "#000000",
-        ...THEME_COMBOS.WHITE_BG,
+        ...THEME_COMBOS.WHITE_BG, // WHITE BACKGROUND WITH BLACK TEXT
         borderRadius: 2,
         width: "100%",
         boxSizing: "border-box",
@@ -212,15 +211,15 @@ export function CompleteDebugView() {
       {/* Live Debug Logs - Always Visible by Default */}
       <Box
         sx={{
-          backgroundColor: "#1A1A1A",
+          backgroundColor: COLORS.WHITE, // WHITE BACKGROUND ONLY
           p: 2,
           borderRadius: 1,
-          border: "1px solid #333",
+          border: `3px solid ${COLORS.BLACK}`, // BLACK BORDER FOR CONTRAST
           width: "100%",
           boxSizing: "border-box",
         }}
       >
-        <Typography variant="subtitle2" sx={{ color: "#4CAF50", mb: 1 }}>
+        <Typography variant="subtitle2" sx={{ color: COLORS.BLACK, mb: 1, fontWeight: 'bold' }}>
           Live Logs ({logs.length} entries) - Updates every second
         </Typography>
         <Divider sx={{ borderColor: COLORS.BLACK, mb: 1 }} />
@@ -235,7 +234,7 @@ export function CompleteDebugView() {
               width: "6px",
             },
             "&::-webkit-scrollbar-track": {
-              background: "#333",
+              background: COLORS.WHITE, // WHITE SCROLLBAR TRACK
             },
             "&::-webkit-scrollbar-thumb": {
               backgroundColor: COLORS.BLACK,
@@ -260,17 +259,12 @@ export function CompleteDebugView() {
             logs.slice(-30).map((log, index) => (
               <Box
                 key={index}
-                sx={{ mb: 1, p: 1, borderRadius: 1, backgroundColor: "#222" }}
+                sx={{ mb: 1, p: 1, borderRadius: 1, backgroundColor: COLORS.WHITE, border: `1px solid ${COLORS.BLACK}` }}
               >
                 <Typography
                   component="div"
                   sx={{
-                    color:
-                      log.level === "ERROR"
-                        ? "#FF5252"
-                        : log.level === "SUCCESS"
-                          ? "#4CAF50"
-                          : COLORS.BLACK, // ALL LOGS BLACK - NO COLOR CODING
+                    color: COLORS.BLACK, // ALL TEXT BLACK ON WHITE BACKGROUND
                     fontSize: "10px",
                     fontWeight: "bold",
                   }}
@@ -281,7 +275,7 @@ export function CompleteDebugView() {
                 <Typography
                   component="div"
                   sx={{
-                    color: "#FFFFFF",
+                    color: COLORS.BLACK, // BLACK TEXT ON WHITE BACKGROUND
                     fontSize: "11px",
                     mt: 0.5,
                     wordBreak: "break-word",
@@ -293,13 +287,14 @@ export function CompleteDebugView() {
                   <Typography
                     component="pre"
                     sx={{
-                      color: "#CCCCCC",
+                      color: COLORS.BLACK, // BLACK TEXT ON WHITE BACKGROUND
                       fontSize: "9px",
                       mt: 0.5,
                       whiteSpace: "pre-wrap",
                       maxWidth: "100%",
                       overflow: "hidden",
-                      backgroundColor: "#111",
+                      backgroundColor: COLORS.WHITE, // WHITE BACKGROUND ONLY
+                      border: `1px solid ${COLORS.BLACK}`,
                       p: 0.5,
                       borderRadius: 0.5,
                     }}
@@ -315,7 +310,7 @@ export function CompleteDebugView() {
 
       <Typography
         variant="caption"
-        sx={{ mt: 2, color: "#FFFFFF", display: "block", textAlign: "center" }}
+        sx={{ mt: 2, color: COLORS.BLACK, display: "block", textAlign: "center", fontWeight: 'bold' }}
       >
         Mobile-First Transparency - Everything Visible
       </Typography>

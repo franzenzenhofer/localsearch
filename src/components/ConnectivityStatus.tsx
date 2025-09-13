@@ -52,12 +52,12 @@ export function ConnectivityStatus() {
         icon={<OfflineIcon />}
         label="Offline — using cached version"
         sx={{
-          bgcolor: "#222222",
-          color: "#FFFFFF",
+          bgcolor: "#FFFFFF", // WHITE BACKGROUND ONLY
+          color: "#000000", // BLACK TEXT ON WHITE
           fontWeight: 600,
-          border: "2px solid #FFD700",
+          border: "3px solid #000000", // BLACK BORDER FOR CONTRAST
           "& .MuiChip-icon": {
-            color: "#FFD700",
+            color: "#000000", // BLACK ICON
           },
         }}
       />

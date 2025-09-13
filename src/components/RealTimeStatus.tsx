@@ -1,4 +1,5 @@
 import { Paper, Typography, Box } from "@mui/material";
+import { COLORS } from "../constants/colors";
 import type { ProcessingStatus } from "../types/processing";
 import { StatusProgress } from "./StatusProgress";
 import { ProcessingStages } from "./ProcessingStages";
@@ -14,9 +15,9 @@ export function RealTimeStatus({ show, status }: RealTimeStatusProps) {
   return (
     <Paper
       sx={{
-        backgroundColor: "#000000",
-        color: "#FFFFFF",
-        border: "3px solid #FFD700",
+        backgroundColor: COLORS.WHITE,
+        color: COLORS.BLACK,
+        border: `3px solid ${COLORS.BLACK}`,
         borderRadius: "12px",
         mb: 3,
         overflow: "hidden",
@@ -24,8 +25,8 @@ export function RealTimeStatus({ show, status }: RealTimeStatusProps) {
     >
       <Box
         sx={{
-          backgroundColor: "#FFD700",
-          color: "#000000",
+          backgroundColor: COLORS.GOLD,
+          color: COLORS.BLACK,
           fontWeight: "bold",
           fontSize: "1.5rem",
           p: 2,
@@ -43,11 +44,11 @@ export function RealTimeStatus({ show, status }: RealTimeStatusProps) {
 
         {status.currentFile && (
           <Box
-            sx={{ mb: 3, p: 2, backgroundColor: "#1A1A1A", borderRadius: 2 }}
+            sx={{ mb: 3, p: 2, backgroundColor: COLORS.WHITE, border: `2px solid ${COLORS.BLACK}`, borderRadius: 2 }}
           >
             <Typography
               variant="body1"
-              sx={{ color: "#FFD700", fontWeight: "bold" }}
+              sx={{ color: COLORS.BLACK, fontWeight: "bold" }}
             >
               Currently Processing: {status.currentFile}
             </Typography>
@@ -57,7 +58,7 @@ export function RealTimeStatus({ show, status }: RealTimeStatusProps) {
         <Box sx={{ mb: 3 }}>
           <Typography
             variant="h6"
-            sx={{ color: "#FFFFFF", fontWeight: "bold", mb: 2 }}
+            sx={{ color: COLORS.BLACK, fontWeight: "bold", mb: 2 }}
           >
             Processing Stages
           </Typography>

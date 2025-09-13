@@ -1,53 +1,52 @@
-import { useState } from 'react'
-import { ListItem, Avatar, ListItemAvatar, ListItemText } from '@mui/material'
-import { Description as DocumentIcon, Image as ImageIcon } from '@mui/icons-material'
-import type { SearchResult } from '../core/types.js'
-import { FileDetailDialog } from './FileDetailDialog'
-import { Header } from './SearchResultItem/Header'
-import { Content } from './SearchResultItem/Content'
-import { isImageFile, createFileDetails } from './SearchResultItem/utils'
+import { useState } from "react";
+import { ListItem, Avatar, ListItemAvatar, Box } from "@mui/material";
+import {
+  Description as DocumentIcon,
+  Image as ImageIcon,
+} from "@mui/icons-material";
+import type { SearchResult } from "../core/types.js";
+import { FileDetailPanel } from "./FileDetailPanel";
+import { Header } from "./SearchResultItem/Header";
+import { Content } from "./SearchResultItem/Content";
+import { isImageFile, createFileDetails } from "./SearchResultItem/utils";
 
 interface SearchResultItemProps {
-  result: SearchResult
+  result: SearchResult;
 }
 
 export function SearchResultItem({ result }: SearchResultItemProps) {
-  const [detailDialogOpen, setDetailDialogOpen] = useState(false)
-  
-  const isImage = isImageFile(result.metadata.name, result.metadata.type)
-  const fileDetails = createFileDetails(result)
+  const [detailsExpanded, setDetailsExpanded] = useState(false);
+
+  const isImage = isImageFile(result.metadata.name, result.metadata.type);
+  const fileDetails = createFileDetails(result);
 
   return (
-    <>
+    <Box sx={{ width: "100%" }}>
       <ListItem alignItems="flex-start" sx={{ px: 0 }}>
         <ListItemAvatar>
-          <Avatar sx={{ bgcolor: 'primary.main' }}>
+          <Avatar sx={{ bgcolor: "primary.main" }}>
             {isImage ? <ImageIcon /> : <DocumentIcon />}
           </Avatar>
         </ListItemAvatar>
-        <ListItemText
-          primary={
-            <Header 
-              filename={result.metadata.name}
-              score={result.score}
-              onDetailClick={() => setDetailDialogOpen(true)}
-            />
-          }
-          secondary={
-            <Content 
-              path={result.metadata.path}
-              metadata={result.metadata}
-              result={result}
-            />
-          }
-        />
+        <Box sx={{ flexGrow: 1 }}>
+          <Header
+            filename={result.metadata.name}
+            score={result.score}
+            onDetailClick={() => setDetailsExpanded(!detailsExpanded)}
+          />
+          <Content
+            path={result.metadata.path}
+            metadata={result.metadata}
+            result={result}
+          />
+        </Box>
       </ListItem>
-      
-      <FileDetailDialog 
-        open={detailDialogOpen}
-        onClose={() => setDetailDialogOpen(false)}
+
+      <FileDetailPanel
+        expanded={detailsExpanded}
+        onToggle={() => setDetailsExpanded(false)}
         fileDetails={fileDetails}
       />
-    </>
-  )
+    </Box>
+  );
 }

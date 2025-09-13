@@ -18,13 +18,13 @@ export interface DocumentContent {
 }
 
 export const FileType = {
-  PDF: 'pdf',
-  DOCX: 'docx',
-  TXT: 'txt',
-  MD: 'md',
-  CSV: 'csv',
-  HTML: 'html',
-  UNKNOWN: 'unknown',
+  PDF: "pdf",
+  DOCX: "docx",
+  TXT: "txt",
+  MD: "md",
+  CSV: "csv",
+  HTML: "html",
+  UNKNOWN: "unknown",
 } as const;
 
-export type FileTypeValue = typeof FileType[keyof typeof FileType];
+export type FileTypeValue = (typeof FileType)[keyof typeof FileType];

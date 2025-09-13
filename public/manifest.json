@@ -10,7 +10,7 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png", 
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -30,7 +30,7 @@
       "short_name": "Search",
       "description": "Start searching immediately",
       "url": "/?focus=search",
-      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ],
   "screenshots": [
@@ -42,7 +42,7 @@
       "label": "LocalSearch desktop interface"
     },
     {
-      "src": "/screenshot-narrow.png", 
+      "src": "/screenshot-narrow.png",
       "sizes": "750x1334",
       "type": "image/png",
       "form_factor": "narrow",

@@ -1,14 +1,20 @@
 /// <reference path="./file-system-handles.d.ts" />
 
 interface Window {
-  showDirectoryPicker(options?: DirectoryPickerOptions): Promise<FileSystemDirectoryHandle>;
-  showOpenFilePicker(options?: OpenFilePickerOptions): Promise<FileSystemFileHandle[]>;
-  showSaveFilePicker(options?: SaveFilePickerOptions): Promise<FileSystemFileHandle>;
+  showDirectoryPicker(
+    options?: DirectoryPickerOptions,
+  ): Promise<FileSystemDirectoryHandle>;
+  showOpenFilePicker(
+    options?: OpenFilePickerOptions,
+  ): Promise<FileSystemFileHandle[]>;
+  showSaveFilePicker(
+    options?: SaveFilePickerOptions,
+  ): Promise<FileSystemFileHandle>;
 }
 
 interface DirectoryPickerOptions {
   id?: string;
-  mode?: 'read' | 'readwrite';
+  mode?: "read" | "readwrite";
   startIn?: FileSystemHandle | string;
 }
 

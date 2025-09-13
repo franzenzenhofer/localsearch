@@ -1,4 +1,4 @@
-name = "filesearch"
+name = "localsearch"
 compatibility_date = "2025-09-11"
 
 # Static assets configuration for Pages
@@ -12,8 +12,5 @@ ENVIRONMENT = "production"
 
 # Routes - serve from custom domain
 [[routes]]
-pattern = "filesearch.franzai.com/*"
+pattern = "localsearch.franzai.com/*"
 zone_name = "franzai.com"
-
-# Pages specific configuration
-pages_build_output_dir = "./dist"

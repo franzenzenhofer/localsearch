@@ -1,10 +1,10 @@
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 export const mockElement = {
   addEventListener: vi.fn(),
   style: {},
-  innerHTML: '',
-  textContent: '',
+  innerHTML: "",
+  textContent: "",
   classList: {
     add: vi.fn(),
     remove: vi.fn(),
@@ -43,10 +43,14 @@ export function clearMockDOM() {
 export const mockFileInput = {
   ...mockElement,
   files: [],
-  value: '',
+  value: "",
 };
 
-export function createMockFile(name: string, content: string, type = 'text/plain') {
+export function createMockFile(
+  name: string,
+  content: string,
+  type = "text/plain",
+) {
   return new File([content], name, { type });
 }
 

@@ -10,7 +10,7 @@ LocalSearch is a professional React-based Progressive Web App (PWA) that enables
 ## ✨ Features
 
 - **🔒 100% Private** - All processing happens locally in your browser
-- **⚡ Instant Search** - Sub-second search results across all file types  
+- **⚡ Instant Search** - Sub-second search results across all file types
 - **📱 Mobile-First** - Professional responsive design for all devices
 - **🚀 PWA Ready** - Install as an app, works offline
 - **🎯 Multiple Formats** - PDF, DOCX, TXT, MD, CSV, HTML support
@@ -50,13 +50,15 @@ npm run build
 ## 🏗️ Architecture
 
 ### Frontend/Backend Separation
+
 - **SearchFacade** - Complete abstraction layer for core logic reusability
 - **Material-UI Components** - Professional, mature component library
-- **React 19+** - Modern JSX automatic runtime  
+- **React 19+** - Modern JSX automatic runtime
 - **TypeScript Strict** - Zero tolerance error policy
 - **75-Line Limit** - Hardcore modular architecture enforced
 
 ### Project Structure
+
 ```
 src/
 ├── components/          # React components (<75 lines each)
@@ -64,13 +66,14 @@ src/
 │   ├── SearchBar.tsx   # Professional search input
 │   └── ...
 ├── core/               # Business logic (framework-agnostic)
-│   ├── SearchFacade.ts # Main API abstraction  
+│   ├── SearchFacade.ts # Main API abstraction
 │   └── types.ts        # Type definitions
 ├── hooks/              # React hooks
 └── search/             # Search engine implementation
 ```
 
 ### Core Technologies
+
 ```
 Frontend:  React + Material-UI + TypeScript
 Search:    MiniSearch + Web Workers
@@ -83,53 +86,58 @@ Deploy:    Cloudflare Pages
 ## 🏆 Performance
 
 - **Build Size**: ~1.3MB (PWA with workers)
-- **Search Speed**: <100ms for 1000+ documents  
+- **Search Speed**: <100ms for 1000+ documents
 - **Mobile Performance**: Optimized for low-end devices
 - **Memory Usage**: Efficient IndexedDB storage
 - **Code Quality**: 75-line limit, zero warnings
 
 ## 📄 Supported File Types
 
-| Format | Extension | Parser |
-|--------|-----------|--------|
-| PDF | `.pdf` | PDF.js |
-| Word | `.docx` | Mammoth |
-| Text | `.txt` | Native |
-| Markdown | `.md` | Native |
-| CSV | `.csv` | Papa Parse |
-| HTML | `.html` | DOMParser |
+| Format   | Extension | Parser     |
+| -------- | --------- | ---------- |
+| PDF      | `.pdf`    | PDF.js     |
+| Word     | `.docx`   | Mammoth    |
+| Text     | `.txt`    | Native     |
+| Markdown | `.md`     | Native     |
+| CSV      | `.csv`    | Papa Parse |
+| HTML     | `.html`   | DOMParser  |
 
 ## 🔧 API Usage
 
 ### SearchFacade Core API
+
 ```typescript
-import { SearchFacade } from './core/SearchFacade'
+import { SearchFacade } from "./core/SearchFacade";
 
 const facade = new SearchFacade({
   onProgress: (current, total) => console.log(`${current}/${total}`),
-  onError: (error) => console.error(error)
-})
+  onError: (error) => console.error(error),
+});
 
 // Index files
-await facade.indexFiles(fileList)
+await facade.indexFiles(fileList);
 
 // Search
-const results = await facade.search('query text', 20)
+const results = await facade.search("query text", 20);
 
 // Get stats
-console.log('Files indexed:', facade.getFileCount())
+console.log("Files indexed:", facade.getFileCount());
 ```
 
 ### Debug Interface
+
 Enable debug mode to see:
+
 - Core app method calls
-- Search engine internals  
+- Search engine internals
 - File processing pipeline
 - Performance metrics
 - **Force Update** - Clear all caches and force reload latest version
 
 #### Force Update Feature
+
 If you're stuck on an old cached version of the app:
+
 1. Open the **Debug Interface** (bottom-right Debug button)
 2. Expand **"Force Update"** section
 3. Click **"Force Update & Reload"** button
@@ -158,6 +166,7 @@ npm run deploy       # Full deployment pipeline
 7. Open Pull Request
 
 ### Code Quality Standards
+
 - **75-line file limit** - No exceptions
 - **Zero warnings** - TypeScript strict + ESLint max-warnings 0
 - **100% DRY** - No code repetition
@@ -168,8 +177,9 @@ npm run deploy       # Full deployment pipeline
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ### Third-Party Licenses
+
 - **Material-UI**: MIT License
-- **React**: MIT License  
+- **React**: MIT License
 - **TypeScript**: Apache License 2.0
 - **PDF.js**: Apache License 2.0
 - **Mammoth**: BSD-2-Clause License
@@ -192,4 +202,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ using professional open source libraries**
 
-*Standing on the shoulders of giants - using only mature, battle-tested components*
+_Standing on the shoulders of giants - using only mature, battle-tested components_

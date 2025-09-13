@@ -1,70 +1,70 @@
-import { Container, Box, CssBaseline, ThemeProvider, Typography } from '@mui/material'
-import { useSearch } from './hooks/useSearch'
-import { SearchResults } from './components/SearchResults'
-import { FileUpload } from './components/FileUpload'
-import { AppHeader } from './components/AppHeader'
-import { SearchBar } from './components/SearchBar'
-import { DebugView } from './components/DebugView'
-import { IndexManager } from './components/IndexManager'
-import { ConnectivityStatus } from './components/ConnectivityStatus'
-import { superheroTheme } from './theme/superhero'
+import { Container, Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { useSearch } from "./hooks/useSearch";
+import { AppHeader } from "./components/AppHeader";
+import { MainContent } from "./components/MainContent";
+import { ConnectivityStatus } from "./components/ConnectivityStatus";
+import { RealTimeStatus } from "./components/RealTimeStatus";
+import { superheroTheme } from "./theme/superhero";
+import { useAppInit } from "./components/AppInit";
 
 function App() {
-  const { 
-    query, 
-    setQuery, 
-    results, 
-    isSearching, 
+  useAppInit();
+
+  const {
+    query,
+    setQuery,
+    results,
+    isSearching,
     fileCount,
+    processingStatus,
+    showStatus,
     performSearch,
-    handleFileUpload 
-  } = useSearch()
+    handleFileUpload,
+  } = useSearch();
 
   return (
     <ThemeProvider theme={superheroTheme}>
       <CssBaseline />
-      <Box sx={{ flexGrow: 1, minHeight: '100vh', backgroundColor: 'background.default' }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          minHeight: "100vh",
+          backgroundColor: "background.default",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          width: "100vw",
+          maxWidth: "100vw",
+        }}
+      >
         <AppHeader />
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {/* PRIMARY ACTION: Search Interface */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <SearchBar 
-                query={query}
-                setQuery={setQuery}
-                onSearch={performSearch}
-                isSearching={isSearching}
-                fileCount={fileCount}
-              />
-              {results.length === 0 && !isSearching && fileCount === 0 && (
-                <Box sx={{ textAlign: 'center', py: 2 }}>
-                  <Typography variant="h5" sx={{ color: '#1565C0', fontWeight: 600, mb: 2 }}>
-                    🦸 Welcome to LocalSearch!
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: 'text.secondary', mb: 3 }}>
-                    Upload folders to get started with private, superhero-fast file searching
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-
-            {/* SECONDARY ACTIONS: File Management */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <FileUpload onUpload={handleFileUpload} fileCount={fileCount} />
-              <IndexManager onLoadIndex={() => {}} />
-            </Box>
-
-            {/* RESULTS: Search Output */}
-            {(results.length > 0 || isSearching) && (
-              <SearchResults results={results} isLoading={isSearching} />
-            )}
-          </Box>
+        <Container
+          maxWidth={false}
+          sx={{
+            py: 2,
+            px: 2,
+            width: "100%",
+            maxWidth: "100%",
+            flex: 1,
+            overflow: "auto",
+            boxSizing: "border-box",
+          }}
+        >
+          <MainContent
+            query={query}
+            setQuery={setQuery}
+            results={results}
+            isSearching={isSearching}
+            fileCount={fileCount}
+            performSearch={performSearch}
+            handleFileUpload={handleFileUpload}
+          />
+          <RealTimeStatus show={showStatus} status={processingStatus} />
         </Container>
         <ConnectivityStatus />
-        <DebugView />
       </Box>
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;

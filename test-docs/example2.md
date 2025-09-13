@@ -1,6 +1,7 @@
 # LocalSearch Project Notes
 
 ## Features
+
 - PDF text extraction
 - DOCX document processing
 - CSV data parsing
@@ -8,6 +9,7 @@
 - Progressive Web App functionality
 
 ## Technologies Used
+
 - TypeScript for type safety
 - Vite for modern build tooling
 - Vitest for comprehensive testing

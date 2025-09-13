@@ -1,11 +1,17 @@
 /// <reference path="./file-system-base.d.ts" />
 
 interface FileSystemDirectoryHandle extends FileSystemHandle {
-  readonly kind: 'directory';
-  
+  readonly kind: "directory";
+
   entries(): AsyncIterableIterator<[string, FileSystemHandle]>;
-  getDirectoryHandle(name: string, options?: FileSystemGetDirectoryOptions): Promise<FileSystemDirectoryHandle>;
-  getFileHandle(name: string, options?: FileSystemGetFileOptions): Promise<FileSystemFileHandle>;
+  getDirectoryHandle(
+    name: string,
+    options?: FileSystemGetDirectoryOptions,
+  ): Promise<FileSystemDirectoryHandle>;
+  getFileHandle(
+    name: string,
+    options?: FileSystemGetFileOptions,
+  ): Promise<FileSystemFileHandle>;
   keys(): AsyncIterableIterator<string>;
   removeEntry(name: string, options?: FileSystemRemoveOptions): Promise<void>;
   resolve(possibleDescendant: FileSystemHandle): Promise<string[] | null>;
@@ -13,9 +19,11 @@ interface FileSystemDirectoryHandle extends FileSystemHandle {
 }
 
 interface FileSystemFileHandle extends FileSystemHandle {
-  readonly kind: 'file';
-  
-  createWritable(options?: FileSystemCreateWritableOptions): Promise<FileSystemWritableFileStream>;
+  readonly kind: "file";
+
+  createWritable(
+    options?: FileSystemCreateWritableOptions,
+  ): Promise<FileSystemWritableFileStream>;
   getFile(): Promise<File>;
 }
 

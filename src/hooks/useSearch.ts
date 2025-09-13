@@ -1,56 +1,89 @@
-import { useState, useCallback } from 'react';
-import type { SearchResult } from '../core/types.js';
-import { SearchFacade } from '../core/SearchFacade.js';
+import { useState, useCallback } from "react";
+import { SearchFacade } from "../core/SearchFacade";
+import { useSearchState } from "./SearchState";
+import { createSearchActions } from "./SearchActions";
+import { DebugLogger } from "../utils/DebugLogger";
 
 export function useSearch() {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [fileCount, setFileCount] = useState(0);
-  const [progress, setProgress] = useState({ current: 0, total: 0 });
-  
-  const [searchFacade] = useState(() => new SearchFacade({
-    onProgress: (current, total) => setProgress({ current, total }),
-    onError: (error) => console.error('Search error:', error)
-  }));
+  const state = useSearchState();
+  const logger = DebugLogger.getInstance();
 
-  const performSearch = useCallback(async () => {
-    if (!query.trim() || fileCount === 0) return;
-    
-    setIsSearching(true);
-    try {
-      const searchResults = await searchFacade.search(query);
-      setResults(searchResults);
-    } catch (error) {
-      console.error('Search failed:', error);
-      setResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  }, [query, fileCount, searchFacade]);
+  // Initialize debug logging
+  logger.info("HOOK", "useSearch hook initialized");
 
-  const handleFileUpload = useCallback(async (files: File[]) => {
-    if (files.length === 0) return;
-    
-    try {
-      await searchFacade.processFiles(files, {
-        onProgress: (current, total) => setProgress({ current, total }),
-        onError: (error) => console.error('Processing error:', error)
-      });
-      setFileCount(searchFacade.getDocumentCount());
-    } catch (error) {
-      console.error('File indexing failed:', error);
-    }
-  }, [searchFacade]);
+  const [searchFacade] = useState(() => {
+    logger.info("FACADE", "Creating new SearchFacade instance");
+    return new SearchFacade({
+      onProgress: (current, total) => {
+        logger.info("PROGRESS", `File progress: ${current}/${total}`, {
+          current,
+          total,
+        });
+        state.setProgress({ current, total });
+        state.setProcessingStatus((prev) => ({
+          ...prev,
+          processedFiles: current,
+          totalFiles: total,
+          progress: total > 0 ? Math.round((current / total) * 100) : 0,
+        }));
+      },
+      onError: (error) => {
+        logger.error("ERROR", "Processing error occurred", {
+          error,
+          timestamp: Date.now(),
+        });
+        state.setProcessingStatus((prev) => ({
+          ...prev,
+          errors: [...prev.errors, error],
+          stage: "error",
+        }));
+      },
+      onStageChange: (stage) => {
+        logger.info("STAGE", `Processing stage changed to: ${stage}`, {
+          stage,
+          timestamp: Date.now(),
+        });
+        state.setProcessingStatus((prev) => ({ ...prev, stage: stage as any }));
+      },
+      onFileProcessing: (filename) => {
+        logger.info("FILE", `Processing file: ${filename}`, {
+          filename,
+          timestamp: Date.now(),
+        });
+        state.setProcessingStatus((prev) => ({
+          ...prev,
+          currentFile: filename,
+        }));
+      },
+      onLog: (message) => {
+        logger.info("LOG", message);
+        state.setProcessingStatus((prev) => ({
+          ...prev,
+          logs: [...prev.logs.slice(-20), message],
+        }));
+      },
+    });
+  });
+
+  const actions = createSearchActions(searchFacade, state, state);
+
+  const closeStatusModal = useCallback(() => {
+    logger.event("UI", "Status modal closed", { timestamp: Date.now() });
+    state.setShowStatus(false);
+  }, [state, logger]);
 
   return {
-    query,
-    setQuery,
-    results,
-    isSearching,
-    fileCount,
-    progress,
-    performSearch,
-    handleFileUpload
+    query: state.query,
+    setQuery: state.setQuery,
+    results: state.results,
+    isSearching: state.isSearching,
+    fileCount: state.fileCount,
+    progress: state.progress,
+    processingStatus: state.processingStatus,
+    showStatus: state.showStatus,
+    performSearch: actions.performSearch,
+    handleFileUpload: actions.handleFileUpload,
+    closeStatusModal,
+    searchFacade,
   };
 }

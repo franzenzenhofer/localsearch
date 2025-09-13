@@ -1,4 +1,4 @@
-import type { FileMetadata, FileTypeValue } from './base-types.js';
+import type { FileMetadata, FileTypeValue } from "./base-types";
 
 export interface SearchResult {
   fileId: string;

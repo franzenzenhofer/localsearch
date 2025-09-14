@@ -140,6 +140,6 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
   },
   optimizeDeps: {
-    include: ["pdfjs-dist/build/pdf.worker.min.js"],
+    exclude: ["pdfjs-dist"],
   },
 });

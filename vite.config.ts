@@ -132,15 +132,12 @@ export default defineConfig({
     target: "es2020",
     rollupOptions: {
       output: {
-        manualChunks: {
-          "pdf-worker": ["pdfjs-dist"],
-          "office-parser": ["mammoth"],
-          "csv-parser": ["papaparse"],
-          "search-engine": ["minisearch"],
-          database: ["dexie"],
-        },
+        // Let Vite handle chunk splitting automatically
+        // This prevents empty chunks from being generated
       },
     },
+    // Optimize chunk size
+    chunkSizeWarningLimit: 1000,
   },
   optimizeDeps: {
     include: ["pdfjs-dist/build/pdf.worker.min.js"],
